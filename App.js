@@ -7,7 +7,7 @@ import Home from "./screens/home";
 import About from "./screens/about";
 import Product from "./screens/product";
 import Profile from "./screens/profile";
-import Article from "./screens/article";
+import Moremenu from "./screens/moremenu";
 
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
@@ -31,8 +31,8 @@ const Tabs = () => {
             case "About":
               iconName = "newspaper-outline";
               break;
-            case "Profile":
-              iconName = "person-circle-outline";
+            case "more":
+              iconName = "grid-outline";
               break;
           }
           return (
@@ -61,7 +61,7 @@ const Tabs = () => {
       <Tab.Screen name="Home" component={Home} options={noHead} />
       <Tab.Screen name="Product" component={Product} options={noHead} />
       <Tab.Screen name="About" component={About} options={noHead} />
-      <Tab.Screen name="Profile" component={Profile} options={noHead} />
+      <Tab.Screen name="more" component={Moremenu} options={noHead} />
     </Tab.Navigator>
   );
 };
@@ -72,11 +72,11 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Tabs" component={Tabs} options={noHead} />
-          <Stack.Screen
-            name="Article"
-            component={Article}
+          {/* <Stack.Screen
+            name="News Detail"
+            component={NewsDetail}
             options={noHead}
-          />
+          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
