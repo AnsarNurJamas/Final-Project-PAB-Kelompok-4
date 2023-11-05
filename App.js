@@ -7,6 +7,7 @@ import Home from "./screens/home";
 import About from "./screens/about";
 import Product from "./screens/product";
 import Profile from "./screens/profile";
+import Article from "./screens/article";
 
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
@@ -71,11 +72,11 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Tabs" component={Tabs} options={noHead} />
-          {/* <Stack.Screen
-            name="News Detail"
-            component={NewsDetail}
+          <Stack.Screen
+            name="Article"
+            component={Article}
             options={noHead}
-          /> */}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
