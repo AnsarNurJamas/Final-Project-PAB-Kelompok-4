@@ -1,12 +1,12 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Header } from "../components";
+import { Box, ScrollView } from "native-base";
 
 const Article = () => {
-  return (
-    <View>
-      <Text>article</Text>
-    </View>
-  )
-}
+    return (
+        <>
+          <Header title={"Article"} />
+        </>
+    );
+};
 
-export default Article
+export default Article;
