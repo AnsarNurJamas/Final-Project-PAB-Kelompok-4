@@ -8,8 +8,7 @@ const DetailArticle = ({ route }) => {
   const { itemDikirim } = route.params; //mengekstrak itemDikirim dari parameter route
 
   return (
-
-    <SafeAreaView>
+    <View>
       <Header title={"Article"} withBack="true" />
       <ScrollView>
         <View>
@@ -41,7 +40,7 @@ const DetailArticle = ({ route }) => {
               {itemDikirim.content}</Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

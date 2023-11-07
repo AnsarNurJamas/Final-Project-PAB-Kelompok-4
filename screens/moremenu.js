@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { Header } from "../components";
 import Profile from "./profile";
 import Article from "../screens/article";
+import Faq from "./faq";
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,7 @@ const App = () => {
         </Stack.Screen>
         <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
         <Stack.Screen name="Article" component={Article} options={{ headerShown: false }} />
+        <Stack.Screen name="Faq" component={Faq} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NativeBaseProvider>
   );
