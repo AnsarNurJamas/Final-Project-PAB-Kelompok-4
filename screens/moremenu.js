@@ -7,6 +7,7 @@ import Profile from "./profile";
 import Article from "../screens/article";
 import Faq from "./faq";
 
+
 const Stack = createNativeStackNavigator();
 
 const Moremenu = ({ navigation }) => {
