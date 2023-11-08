@@ -12,8 +12,9 @@ import ProductDetail from "./screens/ProductDetail";
 import Checkout from "./screens/checkout";
 import Succes from "./screens/succes";
 import Login from "./screens/login";
-import Welcome from "./screens/welcome";
 import Register from "./screens/register";
+import History from "./screens/history";
+import DetailHistory from "./screens/detailhistory";
 
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
@@ -106,8 +107,13 @@ const App = () => {
             options={noHead}
           />
           <Stack.Screen
-            name="Welcome"
-            component={Welcome}
+            name="History"
+            component={History}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="DetailHistory"
+            component={DetailHistory}
             options={noHead}
           />
         </Stack.Navigator>
