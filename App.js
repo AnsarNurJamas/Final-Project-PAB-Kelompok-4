@@ -12,7 +12,6 @@ import ProductDetail from "./screens/ProductDetail";
 import Checkout from "./screens/checkout";
 import Succes from "./screens/succes";
 import Login from "./screens/login";
-import Welcome from "./screens/welcome";
 import Register from "./screens/register";
 
 // Navigator Declaration
@@ -103,11 +102,6 @@ const App = () => {
           <Stack.Screen
             name="Register"
             component={Register}
-            options={noHead}
-          />
-          <Stack.Screen
-            name="Welcome"
-            component={Welcome}
             options={noHead}
           />
         </Stack.Navigator>
