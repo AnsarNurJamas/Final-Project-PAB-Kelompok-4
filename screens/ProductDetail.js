@@ -1,7 +1,7 @@
 import { Heading, ScrollView, Center, Text, FlatList, Box, Image, Button, HStack } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { Header } from "../components";
-import datas from "../datas";
+import {datas} from "../datas";
 import { TouchableOpacity } from "react-native";
 
 const ProductDetail = ({ route, navigation }) => {
