@@ -15,7 +15,6 @@ import Login from "./screens/login";
 import Register from "./screens/register";
 import History from "./screens/history";
 import DetailHistory from "./screens/detailhistory";
-import detailArticle from "./screens/detailArticle"
 import DetailArticle from "./screens/detailArticle";
 
 // Navigator Declaration
@@ -84,6 +83,41 @@ const App = () => {
           <Stack.Screen
             name="Detail Article"
             component={DetailArticle}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="ProductDetail"
+            component={ProductDetail}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="Checkout"
+            component={Checkout}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="Succes"
+            component={Succes}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="login"
+            component={Login}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="History"
+            component={History}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="DetailHistory"
+            component={DetailHistory}
             options={noHead}
           />
         </Stack.Navigator>
