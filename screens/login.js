@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useFonts } from "expo-font";
-import { AppLoading } from "expo";
 import Svg, { Path } from "react-native-svg";
 import { View, Text, Button, Box, Image, Heading, Center, Divider, Input, HStack } from 'native-base';
 
 const Login = ({ route, navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const Tabs = () => {
-    // Navigasi ke halaman lain (ganti "ProductDetail" dengan nama halaman tujuan Anda)
     navigation.navigate("Tabs");
   };
 
   const Register = () => {
-    // Navigasi ke halaman lain (ganti "ProductDetail" dengan nama halaman tujuan Anda)
     navigation.navigate("Register");
   };
 
@@ -27,7 +27,7 @@ const Login = ({ route, navigation }) => {
     <Box>
       <Box h={160} backgroundColor={"#38bdf8"} justifyContent="center" alignItems="center">
         <Image
-          source={require("../assets/logo.png")}
+          source={require("../assets/fisheesh.png")}
           size="xl"
           alt="Fisheesh Logo"
           mt={10}
@@ -37,7 +37,7 @@ const Login = ({ route, navigation }) => {
         <Path fill="#38bdf8" fill-opacity="1" d="M0,160L34.3,144C68.6,128,137,96,206,112C274.3,128,343,192,411,186.7C480,181,549,107,617,101.3C685.7,96,754,160,823,186.7C891.4,213,960,203,1029,176C1097.1,149,1166,107,1234,112C1302.9,117,1371,171,1406,197.3L1440,224L1440,0L1405.7,0C1371.4,0,1303,0,1234,0C1165.7,0,1097,0,1029,0C960,0,891,0,823,0C754.3,0,686,0,617,0C548.6,0,480,0,411,0C342.9,0,274,0,206,0C137.1,0,69,0,34,0L0,0Z">
         </Path>
       </Svg>
-      <Box p={5}>
+      <Box p={5} alignSelf={"center"}>
         <Center>
           <Text fontFamily='PermanentMarker-Regular' fontSize={50} color={"#38bdf8"}>FISEESH</Text>
         </Center>
@@ -45,12 +45,16 @@ const Login = ({ route, navigation }) => {
           placeholder="Email"
           variant="underlined"
           keyboardType="email-address"
+          value={email}
+          onChangeText={text => setEmail(text)}
           mt={3}
         />
         <Input
           placeholder="Password"
           variant="underlined"
+          value={password}
           secureTextEntry
+          onChangeText={text => setPassword(text)}
           mt={4}
         />
         <Button backgroundColor={"#38bdf8"} mt={10} onPress={Tabs}>

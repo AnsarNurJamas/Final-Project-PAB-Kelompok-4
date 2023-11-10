@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useFonts } from "expo-font";
-import { AppLoading } from "expo";
 import Svg, { Path } from "react-native-svg";
 import { View, Text, Button, Box, Image, Heading, Center, Divider, Input, HStack } from 'native-base';
 
 const Register = ({ route, navigation }) => {
+  const [name, setName] = useState('');
+  const [notelephone, setNotelephone] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
+
   const Tabs = () => {
-    // Navigasi ke halaman lain (ganti "ProductDetail" dengan nama halaman tujuan Anda)
     navigation.navigate("Tabs");
   };
 
@@ -21,7 +25,7 @@ const Register = ({ route, navigation }) => {
     <Box>
       <Box h={160} backgroundColor={"#38bdf8"} justifyContent="center" alignItems="center">
         <Image
-          source={require("../assets/logo.png")}
+          source={require("../assets/fisheesh.png")}
           size="xl"
           alt="Fisheesh Logo"
           mt={10}
@@ -38,12 +42,24 @@ const Register = ({ route, navigation }) => {
         <Input
           placeholder="Name"
           variant="underlined"
-          keyboardType="email-address"
+          value={name}
+          onChangeText={text => setName(text)}
+          keyboardType="default"
+          mt={3}
+        />
+        <Input
+          placeholder="No Telephone"
+          variant="underlined"
+          value={notelephone}
+          onChangeText={text => setNotelephone(text)}
+          keyboardType="default"
           mt={3}
         />
         <Input
           placeholder="Email"
           variant="underlined"
+          value={email}
+          onChangeText={text => setEmail(text)}
           keyboardType="email-address"
           mt={3}
         />
@@ -51,6 +67,8 @@ const Register = ({ route, navigation }) => {
           placeholder="Password"
           variant="underlined"
           secureTextEntry
+          value={password}
+          onChangeText={text => setPassword(text)}
           mt={4}
         />
         <Button backgroundColor={"#38bdf8"} mt={60} onPress={Tabs}>
