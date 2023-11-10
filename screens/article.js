@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import datas from "../datas";
 
 const Article = () => {
-  const navigation = useNavigation(); //untuk screen
+  const navigation = useNavigation(); //untuk navigasi
 
   const renderitem = ({ item }) => {
     return (
