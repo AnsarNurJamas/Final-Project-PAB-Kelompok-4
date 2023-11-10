@@ -1,14 +1,12 @@
 import { Header } from "../components";
 import React, { useState } from "react";
-// import { ImageCarousel, Image } from "@nativebase/components";
-import { StyleSheet, View, Box, ScrollView } from "native-base";
-import { Text, Dimensions } from "react-native"
+import { View, Box, ScrollView } from "native-base";
+import { Text } from "react-native"
 import { SliderBox } from "react-native-image-slider-box";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import Separator from "../components/separator";
 import MapView from 'react-native-maps';
-// import { Carousel } from 'react-native-base-carousel';
 
 const About = () => {
   const navigation = useNavigation(); //membuat navigation
@@ -77,45 +75,7 @@ const About = () => {
   );
 };
 
-// const [images, setImages] = useState([
-//   {
-//     source: require("../assets/budaya1.jpeg"),
-//   },
-//   {
-//     source: require("../assets/budidaya2.jpeg"),
-//   },
-//   {
-//     source: require("../assets/budidaya3.jpeg"),
-//   },
-// ]);
 
-
-//   return (
-//     <View style={{ flex: 1 }}>
-//       <ImageCarousel
-//         images={images}
-//         style={{
-//           width: "100%",
-//           height: "200px",
-//         }}
-//         indicators={true}
-//         autoplay={true}
-//         loop={true}
-//       />
-//     </View>
-//   );
-
-
-
-
-{/* <Carousel
-  data = {data}
-  renderItem = {({item,index}) => <View> {...}</View>}
-  itemWidth = {width}
-  onSnapItem = {(item) => console.log (item)}
-  pagination
-  autoplay
-/> */}
 
 
 export default About;

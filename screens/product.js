@@ -4,7 +4,7 @@ import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Header } from "../components";
 import ProductDetail from "./ProductDetail";
-import datas from "../datas";
+import {datas} from "../datas";
 
 
 const Product = () => {

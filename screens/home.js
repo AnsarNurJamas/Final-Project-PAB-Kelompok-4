@@ -38,7 +38,7 @@ const Home = () => {
 
   return (
     <>
-      <Header title={"FISHEESH"} />
+      <Header title={"FISEESH"} />
       <ScrollView>
       <Box justifyContent="center" alignItems="center" my={5} mx={3}>
         <ScrollView horizontal pagingEnabled style={{ width: "100%" }}>
@@ -54,7 +54,7 @@ const Home = () => {
         </ScrollView>
       </Box>
       <Box mx={3}>
-        <Heading>Product Unggulan FISHEESH</Heading>
+        <Heading>Product Unggulan FISEESH</Heading>
         <ScrollView horizontal style={{ marginTop: 10 }}>
             {imagesSlideshow2.map((item, index) => (
               <VStack key={index} p={2} shadow={3} borderRadius={10} mr={4}>

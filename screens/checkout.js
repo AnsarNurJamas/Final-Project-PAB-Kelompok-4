@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { Header } from "../components";
-import { Heading, Center, Text, Box, Image, Button, HStack, VStack, Spacer, Divider, Select } from "native-base";
+import { Heading,
+     Center, 
+     Text, 
+     Box, 
+     Image, 
+     Button, 
+     HStack, 
+     VStack, 
+     Spacer, 
+     Divider, 
+     Select } from "native-base";
 
 const Checkout = ({ route, navigation }) => {
     const { image, title, content, price } = route.params.item;
