@@ -8,7 +8,15 @@ import About from "./screens/about";
 import Product from "./screens/product";
 import Profile from "./screens/profile";
 import Moremenu from "./screens/moremenu";
+import ProductDetail from "./screens/ProductDetail";
+import Checkout from "./screens/checkout";
+import Succes from "./screens/succes";
+import Login from "./screens/login";
+import Register from "./screens/register";
+import History from "./screens/history";
+import DetailHistory from "./screens/detailhistory";
 import detailArticle from "./screens/detailArticle"
+import DetailArticle from "./screens/detailArticle";
 
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
@@ -75,7 +83,7 @@ const App = () => {
           <Stack.Screen name="Tabs" component={Tabs} options={noHead} />
           <Stack.Screen
             name="Detail Article"
-            component={detailArticle}
+            component={DetailArticle}
             options={noHead}
           />
         </Stack.Navigator>

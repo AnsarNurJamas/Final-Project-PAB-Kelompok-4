@@ -2,7 +2,7 @@ import { Header } from "../components";
 import { Text, TouchableOpacity } from "react-native"
 import { View, Box, ScrollView, FlatList, Image, Heading } from "native-base";
 import { useNavigation } from "@react-navigation/native";
-import datas from "../datas";
+import {articles} from "../datas";
 
 const Article = () => {
   const navigation = useNavigation(); //untuk navigasi
@@ -50,7 +50,7 @@ const Article = () => {
     <>
       <Header title={"Article"} />
       <FlatList
-        data={datas}
+        data={articles}
         renderItem={renderitem}
         keyExtractor={(item) => item.id}
       />
