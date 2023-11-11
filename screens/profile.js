@@ -14,8 +14,8 @@ const Profile = ({ navigation }) => {
     navigation.navigate("Login");
   };
 
-  const EditProfile = () => {
-    navigation.navigate("EditProfile");
+  const Editprofile = () => {
+    navigation.navigate("Editprofile");
   };
 
   return (
@@ -45,7 +45,7 @@ const Profile = ({ navigation }) => {
         </HStack>
       </VStack>
       <VStack alignSelf="center" justifyContent="center">
-        <Button onPress={EditProfile} bg={"#38bdf8"} mt={5} w={380} h={50}>
+        <Button onPress={Editprofile} bg={"#38bdf8"} mt={5} w={380} h={50}>
           <Heading color={"white"}>Edit Profile</Heading>
         </Button>
         <Button onPress={Login} bg={"#38bdf8"} mt={7} h={50}>
