@@ -16,6 +16,9 @@ import Register from "./screens/register";
 import History from "./screens/history";
 import DetailHistory from "./screens/detailhistory";
 import DetailArticle from "./screens/detailArticle";
+import Editprofile from "./screens/editprofile";
+import Article from "./screens/article";
+import Faq from "./screens/faq";
 
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
@@ -78,7 +81,7 @@ const App = () => {
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="login">
           <Stack.Screen name="Tabs" component={Tabs} options={noHead} />
           <Stack.Screen
             name="Detail Article"
@@ -101,6 +104,11 @@ const App = () => {
             options={noHead}
           />
           <Stack.Screen
+            name="Editprofile"
+            component={Editprofile}
+            options={noHead}
+          />
+          <Stack.Screen
             name="login"
             component={Login}
             options={noHead}
@@ -119,6 +127,21 @@ const App = () => {
             name="DetailHistory"
             component={DetailHistory}
             options={noHead}
+          />
+          <Stack.Screen
+          name="Profile" 
+          component={Profile} 
+          options={noHead} 
+          />
+          <Stack.Screen 
+          name="Article" 
+          component={Article} 
+          options={noHead} 
+          />
+          <Stack.Screen 
+          name="Faq" 
+          component={Faq} 
+          options={noHead} 
           />
         </Stack.Navigator>
       </NavigationContainer>

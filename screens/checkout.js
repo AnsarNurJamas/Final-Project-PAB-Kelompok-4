@@ -134,7 +134,7 @@ const Checkout = ({ route, navigation }) => {
                     </Select>
                 </HStack>
             </Box>
-            <Box bg={"white"} shadow={5} space={2} alignItems="center" position="absolute" bottom={0} left={0} w={400} h={90}>
+            <Box bg={"white"} shadow={5} space={2} alignItems="center" position="absolute" bottom={0} left={0} w={"100%"} h={90}>
                 <Button
                     bg="#38bdf8"
                     mt={5}

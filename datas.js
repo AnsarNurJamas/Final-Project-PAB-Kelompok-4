@@ -71,11 +71,6 @@ const datas = [
       image:
         "https://resepkoki.id/wp-content/uploads/2017/01/ikan-bawal-300x198.png",
         content: "deskripsi ikan",
-        id : 1,
-        title: "Mengupas Tuntas Strategi Sukses di Industri Pembudidayaan Ikan",
-        image: "https://mediatani.co/wp-content/uploads/2021/06/Pemberian-pakan-pada-ikan.jpg",
-        content: "Pembudidayaan ikan, yang menempati peran yang krusial dalam memenuhi kebutuhan pangan akan protein hewani di berbagai belahan dunia, menjadi semakin signifikan dengan pertumbuhan terus-menerus dalam permintaan akan produk-produk ikan. Oleh karena itu, penting bagi pelaku industri ini untuk mengidentifikasi dan menerapkan strategi-sukses yang tepat guna memastikan kelangsungan dan keberhasilan usaha di sektor pembudidayaan ikan.",
-        date: "03 Januari 2022"
     },
     {
       id: 9,
@@ -85,11 +80,6 @@ const datas = [
       image:
         "https://resepkoki.id/wp-content/uploads/2017/01/ikan-gabus-300x202.jpg",
         content: "deskripsi ikan",
-        id : 2,
-        title: "Teknik Perawatan Benih Ikan Bandeng yang Efisien dan Efektif",
-        image: "https://benihikannila.com/wp-content/uploads/2015/03/20181217_125621-scaled.jpg",
-        content: "Pembudidayaan ikan, yang menempati peran yang krusial dalam memenuhi kebutuhan pangan akan protein hewani di berbagai belahan dunia, menjadi semakin signifikan dengan pertumbuhan terus-menerus dalam permintaan akan produk-produk ikan. Oleh karena itu, penting bagi pelaku industri ini untuk mengidentifikasi dan menerapkan strategi-sukses yang tepat guna memastikan kelangsungan dan keberhasilan usaha di sektor pembudidayaan ikan",
-        date: "10 Januari 2022"
     },
     {
       id: 10,
