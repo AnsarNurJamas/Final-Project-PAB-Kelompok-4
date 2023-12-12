@@ -48,24 +48,28 @@ const Login = ({ route, navigation }) => {
           value={email}
           onChangeText={text => setEmail(text)}
           mt={3}
+          ml={5}
+          w={"95%"}
         />
         <Input
           placeholder="Password"
           variant="underlined"
+          w={"95%"}
           value={password}
+          ml={5}
           secureTextEntry
           onChangeText={text => setPassword(text)}
           mt={4}
         />
-        <Button backgroundColor={"#38bdf8"} mt={10} onPress={Tabs}>
+        <Button ml={5} w={300} backgroundColor={"#38bdf8"} mt={10} onPress={Tabs}>
           <Text bold color={"white"}>Login</Text>
         </Button>
         <HStack>
-        <Divider w={40} mt={7} />
+        <Divider ml={5} w={130} mt={7} />
         <Text bold pl={5} mt={4}>or</Text>
-        <Divider w={40} ml={3} mt={7} />
+        <Divider ml={5} w={120}  mt={7} />
         </HStack>
-        <Button backgroundColor={"#38bdf8"} mt={4} onPress={Register}>
+        <Button ml={5} w={300} backgroundColor={"#38bdf8"} mt={4} onPress={Register}>
           <Text bold color={"white"}>Register</Text>
         </Button>
       </Box>

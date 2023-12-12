@@ -28,7 +28,7 @@ const Home = () => {
   useEffect(() => {
     const slideshowInterval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imagesSlideshow1.length);
-    }, 3000); // Ganti gambar setiap 3 detik
+    }, 3000); 
 
     return () => {
       clearInterval(slideshowInterval);
@@ -57,7 +57,6 @@ const Home = () => {
               <VStack key={index} p={2} shadow={3} borderRadius={10} mr={4}>
                 <Image
                   source={item.image}
-                  alt={`Product ${index}`}
                   width={200}
                   height={100}
                   mb={2}
@@ -75,7 +74,6 @@ const Home = () => {
               <VStack key={index} p={2} shadow={3} borderRadius={10} mr={4}>
                 <Image
                   source={item.image}
-                  alt={`Product ${index}`}
                   width={200}
                   height={100}
                   mb={2}

@@ -14,7 +14,7 @@ const ProductDetail = ({ route, navigation }) => {
   return (
     <>
       <Header title={"Product Detail"} withBack="true" />
-        <Box p={2} shadow={3} borderRadius={10} mr={3} ml={3} mt={3} mb={3} h={590} >
+        <Box p={2} shadow={3} borderRadius={10} mr={3} ml={3} mt={3} mb={3} h={490} >
         <Image
             source={{ uri: image }}
             width={400}
@@ -25,11 +25,11 @@ const ProductDetail = ({ route, navigation }) => {
         <Heading mt={10} textAlign={"center"}>{title}</Heading>
         <Text ml={6} mb={10} mt={10}>{content}</Text>
         </Box>
-        <HStack bg={"white"} shadow={5} space={2} px={7} py={5} position="absolute" bottom={0} left={0} w={"100%"} h={90}>
+        <HStack alignSelf="center" bg={"white"} shadow={5} space={2} px={3} py={5} position="absolute" bottom={0} left={0} w={"100%"} h={90}>
         <Button
             bg="#38bdf8"
             h={50}
-            w={350}
+            w={340}
             onPress={Checkout}
           >
            <Box flex={1} flexDirection="row" justifyContent="justify-between" alignItems="center">
@@ -42,6 +42,7 @@ const ProductDetail = ({ route, navigation }) => {
             </Box>
           </Button>
         </HStack>
+
     </>
   );
 };

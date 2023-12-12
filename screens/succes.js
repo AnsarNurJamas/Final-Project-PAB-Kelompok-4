@@ -10,7 +10,7 @@ const Succes = ({ route, navigation }) => {
 
     return (
         <>
-            <Header title={"FISHEESH"} withBack="true" />
+            <Header title={"FISEESH"} withBack="true" />
             <Box p={2} shadow={5} borderRadius={10} mr={3} ml={3} mt={3} mb={3} h={330}>
                 <Heading ml={4} mt={5}> Pembelian Berhasil </Heading>
                 <Divider borderColor="blue" mt={3} ml={5} mr={2} w={310} />
@@ -37,7 +37,7 @@ const Succes = ({ route, navigation }) => {
                     bg="#38bdf8"
                     mt={5}
                     h={50}
-                    w={350}
+                    w={340}
                     onPress={Home}
                 >
                     <Box flex={1} flexDirection="row" justifyContent="justify-between" alignItems="center">
