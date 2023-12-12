@@ -1,14 +1,48 @@
 import React, { useState } from 'react';
 import { useFonts } from "expo-font";
 import Svg, { Path } from "react-native-svg";
-import { View, Text, Button, Box, Image, Heading, Center, Divider, Input, HStack } from 'native-base';
+import { View, Text, Button, Box, Image, Heading, Center, Divider, Input, HStack, Modal, ScrollView } from 'native-base';
+import { registerUser } from '../actions/AuthAction';
 
 const Register = ({ route, navigation }) => {
   const [name, setName] = useState('');
   const [notelephone, setNotelephone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+  const [adress, setAdress] = useState('');
+  const [formError, setFormError] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const onRegister = async () => {
+    if (name && email && notelephone && password && adress) {
+      const data = {
+        name: name,
+        email: email,
+        notelephone: notelephone,
+        password: password,
+        adress: adress,
+        status: "user",
+      };
+
+      console.log(data);
+
+      try {
+        const user = await registerUser(data, password);
+        navigation.replace("Tabs");
+      } catch (error) {
+        console.log("Error", error.message);
+        setFormError(error.message);
+        toggleModal();
+      }
+    } else {
+      setFormError("Harap isi form dengan lengkap dan benar");
+      toggleModal();
+    }
+  };
 
   const Tabs = () => {
     navigation.navigate("Tabs");
@@ -25,7 +59,7 @@ const Register = ({ route, navigation }) => {
     <Box>
       <Box h={160} backgroundColor={"#38bdf8"} justifyContent="center" alignItems="center">
         <Image
-          source={require("../assets/fisheesh.png")}
+          source={require("../assets/logo.png")}
           size="xl"
           alt="Fisheesh Logo"
           mt={10}
@@ -43,7 +77,7 @@ const Register = ({ route, navigation }) => {
           placeholder="Name"
           variant="underlined"
           value={name}
-          onChangeText={text => setName(text)}
+          onChangeText={(name) => setName(name)}
           keyboardType="default"
           mt={3}
         />
@@ -51,7 +85,7 @@ const Register = ({ route, navigation }) => {
           placeholder="No Telephone"
           variant="underlined"
           value={notelephone}
-          onChangeText={text => setNotelephone(text)}
+          onChangeText={(notelephone) => setNotelephone(notelephone)}
           keyboardType="default"
           mt={3}
         />
@@ -59,8 +93,16 @@ const Register = ({ route, navigation }) => {
           placeholder="Email"
           variant="underlined"
           value={email}
-          onChangeText={text => setEmail(text)}
+          onChangeText={(email) => setEmail(email)}
           keyboardType="email-address"
+          mt={3}
+        />
+        <Input
+          placeholder="Alamat"
+          variant="underlined"
+          value={adress}
+          onChangeText={(adress) => setAdress(adress)}
+          keyboardType="default"
           mt={3}
         />
         <Input
@@ -68,10 +110,12 @@ const Register = ({ route, navigation }) => {
           variant="underlined"
           secureTextEntry
           value={password}
-          onChangeText={text => setPassword(text)}
+          onChangeText={(password) => setPassword(password)}
           mt={4}
         />
-        <Button backgroundColor={"#38bdf8"} mt={60} onPress={Tabs}>
+        <Button backgroundColor={"#38bdf8"} mt={60} onPress={() => {
+          onRegister();
+        }}>
           <Text bold color={"white"}>Register</Text>
         </Button>
       </Box>
@@ -79,6 +123,15 @@ const Register = ({ route, navigation }) => {
         <Path fill="#38bdf8" fill-opacity="1" d="M0,192L21.8,186.7C43.6,181,87,171,131,186.7C174.5,203,218,245,262,245.3C305.5,245,349,203,393,176C436.4,149,480,139,524,165.3C567.3,192,611,256,655,282.7C698.2,309,742,299,785,282.7C829.1,267,873,245,916,202.7C960,160,1004,96,1047,96C1090.9,96,1135,160,1178,197.3C1221.8,235,1265,245,1309,240C1352.7,235,1396,213,1418,202.7L1440,192L1440,320L1418.2,320C1396.4,320,1353,320,1309,320C1265.5,320,1222,320,1178,320C1134.5,320,1091,320,1047,320C1003.6,320,960,320,916,320C872.7,320,829,320,785,320C741.8,320,698,320,655,320C610.9,320,567,320,524,320C480,320,436,320,393,320C349.1,320,305,320,262,320C218.2,320,175,320,131,320C87.3,320,44,320,22,320L0,320Z"></Path>
       </Svg>
       <Box mb={10} h={220} backgroundColor={"#38bdf8"} justifyContent="center" alignItems="center"></Box>
+      <Modal isOpen={isModalVisible} onClose={toggleModal}>
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>Terjadi Kesalahan</Modal.Header>
+          <Modal.Body>
+            <Text>{formError}</Text>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </Box>
   );
 };
