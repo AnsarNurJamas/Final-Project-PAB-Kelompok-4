@@ -1,8 +1,7 @@
 import { Header } from "../components";
 import { Box, HStack, ScrollView, VStack, Text, Image, Heading, TouchableOpacity, Button, Center } from "native-base";
-import datas from "../datas";
 
-const History = ({ route, navigation }) => {
+const History = ({ navigation }) => {
     const DetailHistory = () => {
         // Navigasi ke halaman lain (ganti "ProductDetail" dengan nama halaman tujuan Anda)
         navigation.navigate("DetailHistory");
