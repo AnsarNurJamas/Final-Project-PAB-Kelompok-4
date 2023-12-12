@@ -139,7 +139,7 @@ const Checkout = ({ route, navigation }) => {
                     bg="#38bdf8"
                     mt={5}
                     h={50}
-                    w={350}
+                    w={340}
                     onPress={Succes}
                 >
                     <Box flex={1} flexDirection="row" justifyContent="justify-between" alignItems="center">

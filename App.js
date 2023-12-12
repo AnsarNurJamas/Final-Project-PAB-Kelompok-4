@@ -81,7 +81,7 @@ const App = () => {
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="login">
+        <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Tabs" component={Tabs} options={noHead} />
           <Stack.Screen
             name="Detail Article"
@@ -109,7 +109,7 @@ const App = () => {
             options={noHead}
           />
           <Stack.Screen
-            name="login"
+            name="Login"
             component={Login}
             options={noHead}
           />
