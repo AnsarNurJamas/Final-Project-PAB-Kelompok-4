@@ -16,7 +16,7 @@ import Register from "./screens/register";
 import History from "./screens/history";
 import DetailHistory from "./screens/detailhistory";
 import DetailArticle from "./screens/detailArticle";
-import Editprofile from "./screens/editprofile";
+import EditProfile from "./screens/editprofile";
 import Article from "./screens/article";
 import Faq from "./screens/faq";
 
@@ -104,8 +104,8 @@ const App = () => {
             options={noHead}
           />
           <Stack.Screen
-            name="Editprofile"
-            component={Editprofile}
+            name="EditProfile"
+            component={EditProfile}
             options={noHead}
           />
           <Stack.Screen
