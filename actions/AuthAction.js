@@ -22,6 +22,7 @@ export const registerUser = async (data, password) => {
   }
 };
 
+
 export const loginUser = async (email, password) => {
   try {
     const success = await FIREBASE.auth().signInWithEmailAndPassword(email, password);
@@ -41,6 +42,7 @@ export const loginUser = async (email, password) => {
   }
 };
 
+// UNTUK LOG OUT
 export const logoutUser = () => {
   FIREBASE.auth()
     .signOut()
@@ -54,107 +56,37 @@ export const logoutUser = () => {
     });
 };
 
-// export const addNote = async (data) => {
-//   try {
-//     // Ambil data yg sudah login dari fungsi 'getData'
-//     const userData = await getData("user");
 
-//     if (userData) {
-//       // Tambah note sesuai uid
-//       const dataBaru = {
-//         ...data,
-//         uid: userData.uid,
-//       };
+// UNTUK EDIT PROFILE
+export  const editProfile = async  (profile, navigation) => {
+  try {
+    const user = FIREBASE.auth().currentUser;
 
-//       await FIREBASE.database()
-//         .ref("notes/" + userData.uid)
-//         .push(dataBaru);
+    // Update user profile in Firebase
+    await user.updateProfile({
+      displayName: profile.name,
+    });
 
-//       console.log("Note added successfully");
-//     } else {
-//       Alert.alert("Error", "Login Terlebih Dahulu");
-//     }
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    // Update user data in Firebase database
+    await FIREBASE.database()
+      .ref(`users/${user.uid}`)
+      .update({
+        name: profile.name,
+        notelephone: profile.notelephone,
+        adress: profile.adress,
+      });
 
-// export const getNote = async () => {
-//   const userData = await getData("user");
-//   const notesRef = FIREBASE.database().ref("notes/" + userData.uid);
+    // Update user data in local storage
+    const updatedUserData = {
+      ...profile,
+      name: user.displayName,
+    };
 
-//   return notesRef
-//     .once("value")
-//     .then((snapshot) => {
-//       const notesData = snapshot.val();
-//       if (notesData) {
-//         const notesArray = Object.entries(notesData).map(([noteId, noteData]) => ({
-//           noteId,
-//           ...noteData,
-//         }));
-//         return notesArray;
-//       } else {
-//         return [];
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching user notes:", error);
-//       return [];
-//     });
-// };
+    await storeData('user', updatedUserData);
 
-// export const editNote = async (noteId, updatedData) => {
-//   try {
-//     // Ambil data pengguna yang sudah login dari fungsi 'getData'
-//     const userData = await getData("user");
-
-//     if (userData) {
-//       // Perbarui catatan berdasarkan noteId
-//       const noteRef = FIREBASE.database().ref(notes/${userData.uid}/${noteId});
-//       const snapshot = await noteRef.once("value");
-//       const existingNote = snapshot.val();
-
-//       if (existingNote) {
-//         const updatedNote = {
-//           ...existingNote,
-//           ...updatedData,
-//         };
-
-//         await noteRef.update(updatedNote);
-//         console.log("Note updated successfully");
-//       } else {
-//         console.log("Note not found");
-//       }
-//     } else {
-//       Alert.alert("Error", "Login Terlebih Dahulu");
-//     }
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
-// export const deleteNote = async (noteId) => {
-//   try {
-//     const userData = await getData("user");
-
-//     if (!userData) {
-//       Alert.alert("Error", "Login Terlebih Dahulu");
-//       return;
-//     }
-
-//     const noteRef = FIREBASE.database().ref(notes/${userData.uid}/${noteId});
-//     const snapshot = await noteRef.once("value");
-//     const existingNote = snapshot.val();
-
-//     if (!existingNote) {
-//       console.log("Note not found");
-//       return;
-//     }
-
-//     // Hapus catatan dari database
-//     await noteRef.remove();
-//     console.log("Note deleted successfully");
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    // Navigate back to the Profile screen
+    navigation.goBack();
+  } catch (error) {
+    console.error('Error updating profile:', error);
+  }
+};

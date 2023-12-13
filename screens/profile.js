@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Header } from "../components";
 import { Box, Center, Icon, ScrollView, Text, VStack, Stack, Button, HStack, Heading, Divider, Input } from "native-base";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { getData } from '../utils/localStorage';
+import { clearStorage, getData } from '../utils/localStorage';
+import FIREBASE from '../config/FIREBASE';
+
 const Profile = ({ navigation }) => {
   // Add state variables using useState
   const [profile, setProfile] = useState(null);
 
-  //MENGAMBIL DATA USER DARI ASYNC STORAGE DAN ASYNC STORAGE MENDAPAT DARI FIREBASE
+
+  //KODE UNTUK MENGAMBIL DATA USER DARI ASYNCSTORAGE DAN ASYNC STORAGE MENGAMBIL DARI FIREBASE
   const getUserData = () => {
     getData("user").then((res) => {
       const data = res;
@@ -30,9 +33,10 @@ const Profile = ({ navigation }) => {
     };
   }, [navigation]);
 
-  // BATAS  KODE UNTUK MENGAMBIL DATA USER DARI ASYNC STORAGE
 
-  // KODE UNTUK MEMNGATUR NAVIGASI KETIKA TOMBOL EDIT PROFILE DI PENCET AKAN DI ARAHKAN KE HALAMAN EDIT PROFILE
+
+
+  // NAVIGASI KE HALAMAN EDIT PROFILE
   const EditProfile = () => {
     navigation.navigate("EditProfile");
   };
@@ -67,7 +71,7 @@ const Profile = ({ navigation }) => {
         <Button onPress={EditProfile} bg={"#38bdf8"} mt={5} w={380} h={50}>
           <Heading color={"white"}>Edit Profile</Heading>
         </Button>
-        <Button  bg={"#38bdf8"} mt={7} h={50}>
+        <Button onPress={EditProfile} bg={"#38bdf8"} mt={7} h={50}>
           <Heading color={"white"}>Keluar</Heading>
         </Button>
       </VStack>
