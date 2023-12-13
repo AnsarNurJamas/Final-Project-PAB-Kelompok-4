@@ -1,21 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from "../components";
 import { Box, Center, Icon, ScrollView, Text, VStack, Stack, Button, HStack, Heading, Divider, Input } from "native-base";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
+import { getData } from '../utils/localStorage';
 const Profile = ({ navigation }) => {
   // Add state variables using useState
-  const [nama, setNama] = useState("Ekky Dea Audry");
-  const [email, setEmail] = useState("Ekky@gmail.com");
-  const [noTelepon, setNoTelepon] = useState("08123213412");
-  const [alamat, setAlamat] = useState("Jl. Lamongan Jaya");
+  const [profile, setProfile] = useState(null);
 
-  const Login = () => {
-    navigation.navigate("Login");
+  //MENGAMBIL DATA USER DARI ASYNC STORAGE DAN ASYNC STORAGE MENDAPAT DARI FIREBASE
+  const getUserData = () => {
+    getData("user").then((res) => {
+      const data = res;
+      if (data) {
+        console.log("isi data", data);
+        setProfile(data);
+      } else {
+        // navigation.replace('Login');
+      }
+    });
   };
 
-  const Editprofile = () => {
-    navigation.navigate("Editprofile");
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getUserData();
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [navigation]);
+
+  // BATAS  KODE UNTUK MENGAMBIL DATA USER DARI ASYNC STORAGE
+
+  // KODE UNTUK MEMNGATUR NAVIGASI KETIKA TOMBOL EDIT PROFILE DI PENCET AKAN DI ARAHKAN KE HALAMAN EDIT PROFILE
+  const EditProfile = () => {
+    navigation.navigate("EditProfile");
   };
 
   return (
@@ -29,26 +48,26 @@ const Profile = ({ navigation }) => {
       <VStack>
         <HStack mr={5} ml={5} mt={7} justifyContent="space-between">
           <Text bold>Nama</Text>
-          <Text>{nama}</Text>
+          <Text>{profile?.name}</Text>
         </HStack>
         <HStack mr={5} ml={5} mt={5} justifyContent="space-between">
           <Text bold>Email</Text>
-          <Text>{email}</Text>
+          <Text>{profile?.email}</Text>
         </HStack>
         <HStack mr={5} ml={5} mt={5} justifyContent="space-between">
           <Text bold>No Telepon</Text>
-          <Text>{noTelepon}</Text>
+          <Text>{profile?.notelephone}</Text>
         </HStack>
         <HStack mr={5} ml={5} mt={5} mb={3} justifyContent="space-between">
           <Text bold>Alamat</Text>
-          <Text>{alamat}</Text>
+          <Text>{profile?.adress}</Text>
         </HStack>
       </VStack>
       <VStack alignSelf="center" justifyContent="center">
-        <Button onPress={Editprofile} bg={"#38bdf8"} mt={5} w={380} h={50}>
+        <Button onPress={EditProfile} bg={"#38bdf8"} mt={5} w={380} h={50}>
           <Heading color={"white"}>Edit Profile</Heading>
         </Button>
-        <Button onPress={Login} bg={"#38bdf8"} mt={7} h={50}>
+        <Button  bg={"#38bdf8"} mt={7} h={50}>
           <Heading color={"white"}>Keluar</Heading>
         </Button>
       </VStack>
