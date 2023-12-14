@@ -19,7 +19,7 @@ import DetailArticle from "./screens/detailArticle";
 import EditProfile from "./screens/editprofile";
 import Article from "./screens/article";
 import Faq from "./screens/faq";
-
+import Splash from "./screens/splash";
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -89,6 +89,11 @@ const App = () => {
             options={noHead}
           />
           <Stack.Screen
+            name="Splash"
+            component={Splash}
+            options={noHead}
+          />
+          <Stack.Screen
             name="ProductDetail"
             component={ProductDetail}
             options={noHead}
@@ -129,19 +134,19 @@ const App = () => {
             options={noHead}
           />
           <Stack.Screen
-          name="Profile" 
-          component={Profile} 
-          options={noHead} 
+          name="Profile"
+          component={Profile}
+          options={noHead}
           />
-          <Stack.Screen 
-          name="Article" 
-          component={Article} 
-          options={noHead} 
+          <Stack.Screen
+          name="Article"
+          component={Article}
+          options={noHead}
           />
-          <Stack.Screen 
-          name="Faq" 
-          component={Faq} 
-          options={noHead} 
+          <Stack.Screen
+          name="Faq"
+          component={Faq}
+          options={noHead}
           />
         </Stack.Navigator>
       </NavigationContainer>

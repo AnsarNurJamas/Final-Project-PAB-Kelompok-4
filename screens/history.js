@@ -1,42 +1,101 @@
+import React, { useEffect, useState } from "react";
 import { Header } from "../components";
-import { Box, HStack, ScrollView, VStack, Text, Image, Heading, TouchableOpacity, Button, Center } from "native-base";
+import { Box, HStack, ScrollView, VStack, Text, Image, Heading, Button, Center } from "native-base";
+import FIREBASE from '../config/FIREBASE';
 
-const History = ({ navigation }) => {
-    const DetailHistory = () => {
-        // Navigasi ke halaman lain (ganti "ProductDetail" dengan nama halaman tujuan Anda)
-        navigation.navigate("DetailHistory");
-      };
+const History = ({ route, navigation }) => {
+    const [purchaseHistory, setPurchaseHistory] = useState([]);
+
+    useEffect(() => {
+        // Fetch purchase history data when the component mounts
+        fetchPurchaseHistory();
+    }, []);
+
+    const fetchPurchaseHistory = async () => {
+        try {
+            // Assuming you have a 'transactions' node in your Firebase database
+            const transactionsRef = FIREBASE.database().ref('transactions');
+            const snapshot = await transactionsRef.once('value');
+
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const historyList = Object.keys(data).map((key) => {
+                    const historyItem = data[key];
+                    return { id: key, ...historyItem };
+                });
+
+                setPurchaseHistory(historyList);
+            }
+        } catch (error) {
+            console.error('Error fetching purchase history:', error);
+        }
+    };
+
+    const handleBuyAgain = () => {
+        // Navigate to the checkout page with the product ID
+        navigation.navigate('DetailHistory');
+    };
+
     return (
         <>
             <Header title={"Pembelian"} withBack="true" />
-            <Box p={2} shadow={5} borderRadius={10} mr={3} ml={3} mt={3} mb={3} h={230} >
-                <VStack>
-                    <HStack p={3} justifyContent="space-between">
-                        <Text bold>Berhasil</Text>
-                        <Text bold>10/10/2023</Text>
-                    </HStack>
-                    <HStack>
-                        <Image
-                            source={require("../assets/ikanlelee.png")}
-                            width={50}
-
-                            ml={5}
-                            height={100}
-                            alt="ikan"
-                        />
+            <ScrollView>
+                {purchaseHistory.map((historyItem) => (
+                    <Box key={historyItem.id} p={2} shadow={5} borderRadius={10} mr={3} ml={3} mt={3} mb={3} h={210}>
                         <VStack>
-                            <Heading ml={10}> Ikan Lele</Heading>
-                            <Text mt={2} ml={10} bold> Jumlah x3</Text>
-                            <Text mt={2} ml={10} bold> Rp 90.000</Text>
+                            <HStack mx={2} p={3} justifyContent="space-between">
+                                <Text bold>Status: Berhasil</Text>
+                                <Text bold>{historyItem.timestamp}</Text>
+                            </HStack>
+                            <HStack>
+                                <Image
+                                    source={{ uri: historyItem.product?.image || '' }}
+                                    width={120}
+                                    ml={5}
+                                    height={120}
+                                    alt="ikan"
+                                />
+                                <VStack mx={5} >
+                                    <Heading>{historyItem.product?.title || ''}</Heading>
+                                    <Text mt={2} bold>{`Jumlah x${historyItem.quantity}`}</Text>
+                                    <Text mt={2} bold>{`Rp ${historyItem.totalPrice}`}</Text>
+                                    <Text mt={2} bold>{`Pembayaran: ${historyItem.paymentMethod}`}</Text>
+                                </VStack>
+                            </HStack>
+                            <Center>
+                            </Center>
                         </VStack>
-                    </HStack>
-                    <Center>
-                    <Button onPress={DetailHistory} backgroundColor={"#38bdf8"} h={10} w={80} mt={5}>
-                        <Text bold color={"white"} fontSize={14}>Lihat Detail</Text>
-                    </Button>
-                    </Center>
-                </VStack>
-            </Box>
+                    </Box>
+                ))}
+            </ScrollView>
+            <HStack
+                bg={"white"}
+                shadow={5}
+                space={2}
+                alignItems="center"
+                position="absolute"
+                bottom={0}
+                left={0}
+                w={"100%"}
+                h={90}
+            >
+                <Button
+                    bg="#38bdf8"
+                    h={50}
+                    ml={5}
+                    w={"90%"}
+                    onPress={handleBuyAgain}
+                >
+                    <Box flex={1} flexDirection="row" justifyContent="justify-between" alignItems="center">
+                        <Box ml={2}>
+                            <Heading fontSize={20} color="white">Lanjut Belanja</Heading>
+                        </Box>
+                        <Box mr={2}>
+                            <Heading fontSize={20} color="white"></Heading>
+                        </Box>
+                    </Box>
+                </Button>
+            </HStack>
         </>
     );
 };
