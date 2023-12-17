@@ -1,0 +1,38 @@
+<Box flex={1} backgroundColor={"#38bdf8"} h={300} w={400}>
+        <Center flex={1}>
+          <Image
+            source={require("../assets/logo.png")}
+            w="200"
+            h="200"
+            alt="Fisheesh Logo"
+            mt={12}
+          />
+          <Text style={{ fontFamily: 'PermanentMarker-Regular', fontSize: 35 }} fontSize={30} color={"white"}>SELAMAT DATANG</Text>
+        </Center>
+      </Box>
+      <Box mb={780}>
+        <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 90 1440 320">
+          <Path fill="#38bdf8" fill-opacity="1" d="M0,160L34.3,144C68.6,128,137,96,206,112C274.3,128,343,192,411,186.7C480,181,549,107,617,101.3C685.7,96,754,160,823,186.7C891.4,213,960,203,1029,176C1097.1,149,1166,107,1234,112C1302.9,117,1371,171,1406,197.3L1440,224L1440,0L1405.7,0C1371.4,0,1303,0,1234,0C1165.7,0,1097,0,1029,0C960,0,891,0,823,0C754.3,0,686,0,617,0C548.6,0,480,0,411,0C342.9,0,274,0,206,0C137.1,0,69,0,34,0L0,0Z"></Path>
+        </Svg>
+        <Box mb={50} pl={10} pr={10}>
+          <Input
+            placeholder="Email"
+            variant="underlined"
+            keyboardType="email-address"
+            mb={3}
+          />
+          <Input
+            placeholder="Password"
+            variant="underlined"
+            secureTextEntry
+            mb={3}
+          />
+          <Button backgroundColor={"#38bdf8"} mb={4} mt={4} onPress={Tabs}>
+            <Text bold color={"white"}>Login</Text>
+          </Button>
+          <Divider mt={2} />
+          <Button backgroundColor={"#38bdf8"} mb={4} mt={6} onPress={Register}>
+            <Text bold color={"white"}>Register</Text>
+          </Button>
+        </Box>
+      </Box>
