@@ -33,7 +33,23 @@ const Profile = ({ navigation }) => {
     };
   }, [navigation]);
 
-
+  const onSubmit = (profile) => {
+    if (profile) {
+      FIREBASE.auth()
+        .signOut()
+        .then(() => {
+          // Sign-out successful.
+          clearStorage();
+          navigation.replace("Login");
+        })
+        .catch((error) => {
+          // An error happened.
+          alert(error);
+        });
+    } else {
+      navigation.replace("Login");
+    }
+  };
 
 
   // NAVIGASI KE HALAMAN EDIT PROFILE
@@ -71,7 +87,7 @@ const Profile = ({ navigation }) => {
         <Button onPress={EditProfile} bg={"#38bdf8"} mt={5} w={380} h={50}>
           <Heading color={"white"}>Edit Profile</Heading>
         </Button>
-        <Button onPress={EditProfile} bg={"#38bdf8"} mt={7} h={50}>
+        <Button onPress={onSubmit} bg={"#38bdf8"} mt={7} h={50}>
           <Heading color={"white"}>Keluar</Heading>
         </Button>
       </VStack>
