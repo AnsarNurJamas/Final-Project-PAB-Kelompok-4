@@ -1,54 +1,64 @@
+import React from "react";
+import { Text, VStack, HStack, Box, Image, Divider, Button, Heading, ScrollView } from "native-base";
 import { Header } from "../components";
-import { Box, ScrollView, Heading, Divider, Text, HStack, Button } from "native-base";
 
-const Succes = ({ route, navigation }) => {
-    const { image, title, content, price } = route.params.item;
+const Success = ({ route, navigation }) => {
+    // Extract necessary information from the route
+    const { cart, productQuantities, grandTotal } = route.params;
 
-    const Home = () => {
-        navigation.navigate("Home");
-      };
+    // Render purchased items
+    const renderPurchasedItem = (item) => (
+        <Box key={item.id} my={1} alignSelf={"center"} w={"100%"} h={"120"} bg={"white"} borderRadius={20} borderColor={"black"} borderWidth={2}>
+            <HStack p={4}>
+                {item?.image && (
+                    <Image source={{ uri: item.image }} w={"30%"} h={"75"} alt='gambar produk' />
+                )}
+                <VStack mx={3}>
+                    <Text bold fontSize={18}>{item?.title}</Text>
+                    <Text>Rp. {item?.price} /kg</Text>
+                    <Text>Jenis: {item?.jenis}</Text>
+                    <Text>Jumlah: {productQuantities[item.id] || 1}</Text>
+                </VStack>
+            </HStack>
+        </Box>
+
+    );
 
     return (
         <>
-            <Header title={"FISEESH"} withBack="true" />
-            <Box p={2} shadow={5} borderRadius={10} mr={3} ml={3} mt={3} mb={3} h={330}>
-                <Heading ml={4} mt={5}> Pembelian Berhasil </Heading>
-                <Divider borderColor="blue" mt={3} ml={5} mr={2} w={310} />
-                <Text mt={3} ml={5}>Jl Teuku Umar 3/10 </Text>
-                <Text ml={5} mt={2}>Tambaksari, Pacarkembang</Text>
-                <Text ml={5} mt={2}>Lamongan, Jawa Timur </Text>
-                <Divider borderColor="blue" mt={3} ml={5} mr={2} w={310} />
-                <HStack justifyContent="space-between">
-                    <Text ml={5} mt={3}>{title} x3</Text>
-                    <Text mr={5} mt={3}>Rp 90.000</Text>
-                </HStack>
-                <HStack justifyContent="space-between">
-                    <Text ml={5} mt={2}>Ongkos Kirim</Text>
-                    <Text mr={5} mt={2}>Rp 20.000</Text>
-                </HStack>
-                <Divider borderColor="blue" mt={3} ml={5} mr={2} w={310} />
-                <HStack justifyContent="space-between">
-                    <Heading fontSize={20} ml={4} mt={5}> Total </Heading>
-                    <Heading fontSize={20} mr={4} mt={5}> Rp 110.000 </Heading>
-                </HStack>
-            </Box>
-            <Box bg={"white"} shadow={5} space={2} alignItems="center" position="absolute" bottom={0} left={0} w={"100%"} h={90}>
-                <Button
-                    bg="#38bdf8"
-                    mt={5}
-                    h={50}
-                    w={340}
-                    onPress={Home}
-                >
-                    <Box flex={1} flexDirection="row" justifyContent="justify-between" alignItems="center">
-                        <Box ml={2}>
-                            <Heading fontSize={20} color="white">Kembali</Heading>
-                        </Box>
-                    </Box>
-                </Button>
-            </Box>
+            <Header title={"Berhasil"} withBack />
+            <ScrollView>
+                <VStack flex={1}>
+                    <VStack flex={1}>
+                        <Text textAlign="center" fontSize={20} fontWeight="bold" mt={5}>
+                            Terima Kasih Atas Pembelian Anda :)
+                        </Text>
+                        <Divider my={3} alignSelf={"center"} bg={"black"} w={"90%"} />
+                        <VStack flex={1} p={4}>
+                            {cart.map(renderPurchasedItem)}
+                        </VStack>
+                    </VStack>
+                </VStack>
+                {/* <VStack p={4}>
+                    <Text bold>Total Harga:</Text>
+                    <Text>Rp. {grandTotal}</Text>
+                </VStack> */}
+            </ScrollView>
+            <Button
+                onPress={() => {
+                    // Add any navigation logic you need
+                    navigation.navigate('Home');
+                }}
+                bgColor={"#38bdf8"}
+                my={2}
+                w={"90%"}
+                alignSelf={"center"}
+                h={"7%"}
+            >
+                <Text bold fontSize={20} color={"white"}>Kembali</Text>
+            </Button>
         </>
     );
 };
 
-export default Succes;
+export default Success;
