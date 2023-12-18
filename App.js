@@ -20,6 +20,7 @@ import EditProfile from "./screens/editprofile";
 import Article from "./screens/article";
 import Faq from "./screens/faq";
 import Splash from "./screens/splash";
+import Cart from "./screens/cart";
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -146,6 +147,11 @@ const App = () => {
           <Stack.Screen
           name="Faq"
           component={Faq}
+          options={noHead}
+          />
+          <Stack.Screen
+          name="Cart"
+          component={Cart}
           options={noHead}
           />
         </Stack.Navigator>
