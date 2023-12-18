@@ -33,6 +33,7 @@ const Profile = ({ navigation }) => {
     };
   }, [navigation]);
 
+   // KODE UNTUK MELAKUKAN LOG OUT
   const onSubmit = (profile) => {
     if (profile) {
       FIREBASE.auth()
@@ -60,6 +61,7 @@ const Profile = ({ navigation }) => {
   return (
     <>
       <Header title={"PROFILE"} withBack="True" />
+      <ScrollView>
       <Box p={12} alignItems="center">
         <Icon as={Ionicons} name="person-circle-outline" size={200} color="black" />
         <Heading>PROFILE DETAIL</Heading>
@@ -87,10 +89,11 @@ const Profile = ({ navigation }) => {
         <Button onPress={EditProfile} bg={"#38bdf8"} mt={5} w={380} h={50}>
           <Heading color={"white"}>Edit Profile</Heading>
         </Button>
-        <Button onPress={onSubmit} bg={"#38bdf8"} mt={7} h={50}>
+        <Button onPress={() => onSubmit(profile)} bg={"#38bdf8"} mt={7} h={50}>
           <Heading color={"white"}>Keluar</Heading>
         </Button>
       </VStack>
+      </ScrollView>
     </>
   );
 };

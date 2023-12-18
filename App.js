@@ -14,12 +14,10 @@ import Succes from "./screens/succes";
 import Login from "./screens/login";
 import Register from "./screens/register";
 import History from "./screens/history";
+import  EditProfile from "./screens/editprofile"
 import DetailHistory from "./screens/detailhistory";
-import DetailArticle from "./screens/detailArticle";
-import EditProfile from "./screens/editprofile";
-import Article from "./screens/article";
-import Faq from "./screens/faq";
-import Splash from "./screens/splash";
+// import Splash from "./screens/splash";
+import Cart from "./screens/cart";
 
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
@@ -57,7 +55,11 @@ const Tabs = () => {
         },
         tabBarIconStyle: { marginTop: 5 },
         tabBarStyle: {
+          alignSelf: "center",
           height: 70,
+          width: "95%",
+          borderRadius: 10,
+          marginBottom: 10,
           borderTopWidth: 0,
           backgroundColor: '#38bdf8',
         },
@@ -82,18 +84,10 @@ const App = () => {
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Splash">
-          <Stack.Screen name="Tabs" component={Tabs} options={noHead} />
+        <Stack.Navigator initialRouteName="Profile">
           <Stack.Screen
-            name="Detail Article"
-            component={DetailArticle}
-            options={noHead}
-          />
-          <Stack.Screen
-            name="Splash"
-            component={Splash}
-            options={noHead}
-          />
+            name="Tabs"
+            component={Tabs} options={noHead} />
           <Stack.Screen
             name="ProductDetail"
             component={ProductDetail}
@@ -107,11 +101,6 @@ const App = () => {
           <Stack.Screen
             name="Succes"
             component={Succes}
-            options={noHead}
-          />
-          <Stack.Screen
-            name="EditProfile"
-            component={EditProfile}
             options={noHead}
           />
           <Stack.Screen
@@ -135,18 +124,18 @@ const App = () => {
             options={noHead}
           />
           <Stack.Screen
-            name="Profile"
-            component={Profile}
+            name="EditProfile"
+            component={EditProfile}
             options={noHead}
           />
-          <Stack.Screen
-            name="Article"
-            component={Article}
+          {/* <Stack.Screen
+            name="Splash"
+            component={Splash}
             options={noHead}
-          />
+          /> */}
           <Stack.Screen
-            name="Faq"
-            component={Faq}
+            name="Cart"
+            component={Cart}
             options={noHead}
           />
         </Stack.Navigator>
