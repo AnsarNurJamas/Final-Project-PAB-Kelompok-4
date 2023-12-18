@@ -1,3 +1,4 @@
+import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
 import { Box, HStack, Image, Heading } from "native-base";
@@ -5,9 +6,14 @@ import { TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 
-const Header = ({ title, withBack = false }) => {
+const Header = ({ route, title, withBack = false, cart = [] }) => {
   const trueGray900 = "#38bdf8";
   const navigation = useNavigation();
+
+  const navigateToCart = () => {
+    navigation.navigate('Cart', { cart });
+  };
+
   return (
     <SafeAreaView>
       <StatusBar barStyle="light" backgroundColor={trueGray900} />
@@ -17,7 +23,7 @@ const Header = ({ title, withBack = false }) => {
             {!withBack ? (
               <>
                 <Image
-                  source={require("../assets/fisheesh.png")}
+                  source={require("../assets/logo.png")}
                   w="12"
                   h="12"
                   alt="Fisheesh Logo"
@@ -36,32 +42,10 @@ const Header = ({ title, withBack = false }) => {
             )}
             <Heading color={"white"}>{title}</Heading>
           </HStack>
-
-          <HStack space={"2xl"}>
-            {/* <Image
-              source={require("../assets/facebook.png")}
-              w="5"
-              h="5"
-              alt="Facebook Icon"
-            />
-            <Image
-              source={require("../assets/youtube.png")}
-              w="5"
-              h="5"
-              alt="Facebook Icon"
-            />
-            <Image
-              source={require("../assets/twitter.png")}
-              w="5"
-              h="5"
-              alt="Facebook Icon"
-            />
-            <Image
-              source={require("../assets/search.png")}
-              w="5"
-              h="5"
-              alt="Search Icon"
-            /> */}
+          <HStack position="absolute" right="4">
+          <TouchableOpacity onPress={() => navigateToCart()}>
+              <Ionicons name="cart" size={32} color="white" />
+            </TouchableOpacity>
           </HStack>
         </HStack>
       </Box>
