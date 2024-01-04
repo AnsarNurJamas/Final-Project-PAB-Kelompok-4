@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, useWindowDimensions, TouchableOpacity } from 'react-native';
+import { Alert, useWindowDimensions } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { getDatabase, ref, onValue } from 'firebase/database';
+import { TouchableOpacity } from 'react-native';
 import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage';
 import FIREBASE from '../config/FIREBASE';
 import { Header } from '../components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { VStack, Text, FlatList, Image, HStack, Box, Divider, Icon, Button, Modal } from 'native-base';
+import { VStack, View, Text, FlatList, Image, HStack, Box, Divider, Icon, Button, Modal, ScrollView } from 'native-base';
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+
 
 const Product = ({ navigation }) => {
   const [products, setProducts] = useState([]);
+  const [isModalVisible, setModalVisible] = useState(false);
   const [cart, setCart] = useState([]);
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: 'first', title: 'Benih Ikan' },
-    { key: 'second', title: 'Ikan Kecil' },
-    { key: 'third', title: 'Ikan Besar' },
-  ]);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   useEffect(() => {
     const loadCartFromStorage = async () => {
@@ -57,34 +62,49 @@ const Product = ({ navigation }) => {
     return () => unsubscribe();
   }, []);
 
+  const redirectToCart = () => {
+    setModalVisible(false);
+    navigation.navigate('Cart', { items: cart }); // Assuming 'Cart' is the name of your cart screen
+  };
 
-  const addToCart = async (item) => {
+  const addToCart = (item) => {
     const newItem = {
       id: item.id,
       title: item.namaproduct,
       price: item.hargajual,
       image: item.imageUrl,
       jenis: item.kategoriproduct,
+      // ... (other properties you may want to include)
     };
 
-    try {
-      const existingCartJSON = await AsyncStorage.getItem('cart'); // ambil data dari tabel cart di asynstorage
-      const existingCart = existingCartJSON ? JSON.parse(existingCartJSON) : []; //Datanya dijadiin JSON
+    // Update the state and AsyncStorage with the new cart data
+    setCart((prevCart) => {
+      const newCart = [...prevCart, newItem];
+      AsyncStorage.setItem('cart', JSON.stringify(newCart)).catch((error) => {
+        console.error('Error saving cart to AsyncStorage:', error);
+      });
+      Alert.alert("Sukses","Berhasil Menambahkan Produk")
+      return newCart;
+    });
 
-      const itemExists = existingCart.some((cartItem) => cartItem.id === newItem.id); //Ngecek datanya udah pernah ada atau engga
-
-      if (itemExists) { //Kalau datanya udah ada, bakal muncul peringatan ini
-        Alert.alert('Peringatan!', 'Barang sudah ada di keranjang');
-      } else { //Kalau datanya belum ada, dia inputkan datanya ke cart asynstorage
-        const newCart = [...existingCart, newItem];
-        await AsyncStorage.setItem('cart', JSON.stringify(newCart));
-        setCart(newCart);
-      }
-    } catch (error) {
-      console.error('Error handling addToCart:', error);
-    }
+   
   };
 
+  const removeItemFromCart = (itemId) => {
+    // Update the state and AsyncStorage with the new cart data after removing the item
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter((item) => item.id !== itemId);
+      AsyncStorage.setItem('cart', JSON.stringify(updatedCart)).catch((error) => {
+        console.error('Error saving cart to AsyncStorage:', error);
+      });
+      return updatedCart;
+    });
+  };
+
+  const calculateTotalPrice = () => {
+    const totalPrice = cart.reduce((accumulator, item) => accumulator + Number(item.price), 0);
+    return totalPrice.toFixed(0);
+  };
   const renderItem = ({ item }) => (
     <TouchableOpacity
       onPress={() =>
@@ -100,30 +120,69 @@ const Product = ({ navigation }) => {
           },
         })
       }>
-      <Box>
-        <HStack>
-          <Image source={{ uri: item.imageUrl }} style={{ width: 140, height: 140 }} alt='Gambar Produk'/>
-          <VStack>
-            <Box mx={5} my={2}>
-              <Text bold fontSize={23}>{item.namaproduct}</Text>
-              <Text my={2} bold>Rp. {item.hargajual}/kg </Text>
-              <Button w={"70%"} h={10} bg={"#4ade80"} onPress={() => addToCart(item)}>
-                <HStack>
-                  <Icon as={<Ionicons name="cart" />} size="6" color="black" />
-                  <Text bold ml={3}>Tambah</Text>
+      <Box mx={5} my={5} borderWidth={1} borderColor={'gray.300'} borderRadius={5} padding={2}>
+        <Box flexDirection="row">
+          <Image source={{ uri: item.imageUrl }} style={{ width: 100, height: 100 }} alt='Gambar Produk' />
+          <Box flex={1} marginLeft={4}>
+            <Text bold fontSize={15}>{item.namaproduct}</Text>
+            <Box flexDirection="column" alignItems={"flex-end"}>
+              <Text my={2}  fontSize={12} color={'#727070'}>Rp. {item.hargajual}/kg  </Text>
+              <Button w={'40%'} h={8} bg={"#00CDFA"} onPress={() => addToCart(item)}>
+                <HStack mx={0}>
+                  <Icon as={<Ionicons name="cart" />} size="4" color="#ffff" />
+                  <Text bold fontSize={12} color={"#FFFF"}>Tambah</Text>
                 </HStack>
               </Button>
             </Box>
-          </VStack>
-        </HStack>
+          </Box>
+        </Box>
       </Box>
       <Divider />
     </TouchableOpacity>
   );
 
+  const ProductListTabThree = ({ route }) => {
+    const { key } = route;
+
+    // Filter products based on the tab key
+    const filteredProducts = products.filter((item) => {
+      let categoryToDisplay = '';
+
+      if (key === 'three') {
+        categoryToDisplay = 'Ikan Besar';
+      } else {
+        // Add other conditions for additional categories if needed
+      }
+
+      return item.kategoriproduct === categoryToDisplay;
+    });
+    return (
+      <FlatList
+        data={filteredProducts}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
+    );
+  };
+
+
   const ProductListTab = ({ route }) => {
     const { key } = route;
-    const filteredProducts = products.filter((item) => item.kategoriproduct === getCategory(key));
+
+    // Filter products based on the tab key
+    const filteredProducts = products.filter((item) => {
+      let categoryToDisplay = '';
+
+      if (key === 'first') {
+        categoryToDisplay = 'Benih Ikan';
+      } else if (key === 'second') {
+        categoryToDisplay = 'Ikan Kecil';
+      } else {
+        categoryToDisplay = 'Ikan Besar'; // Add other conditions for additional categories if needed
+      }
+
+      return item.kategoriproduct === categoryToDisplay;
+    });
 
     return (
       <FlatList
@@ -134,26 +193,21 @@ const Product = ({ navigation }) => {
     );
   };
 
-  const getCategory = (key) => {
-    switch (key) {
-      case 'first':
-        return 'Benih Ikan';
-      case 'second':
-        return 'Ikan Kecil';
-      case 'third':
-        return 'Ikan Besar';
-      default:
-        return '';
-    }
-  };
+  // Define your other tab scenes similarly
 
   const renderScene = SceneMap({
     first: ProductListTab,
     second: ProductListTab,
-    third: ProductListTab,
+    three: ProductListTabThree, // Assuming you have a third category scene
   });
 
   const layout = useWindowDimensions();
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'first', title: 'Benih Ikan' },
+    { key: 'second', title: 'Ikan Kecil' },
+    { key: 'three', title: 'Ikan Besar' },
+  ]);
 
   return (
     <>
@@ -164,6 +218,29 @@ const Product = ({ navigation }) => {
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
       />
+      <Modal
+        isOpen={isModalVisible}
+        onClose={closeModal}
+      >
+        <Modal.Content w={"85%"} h={"650"}>
+          <Modal.CloseButton />
+          <Modal.Header>Keranjang Belanja</Modal.Header>
+          <Modal.Body >
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Group space={2}>
+              <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                setModalVisible(false);
+              }}>
+                Kembali
+              </Button>
+              <Button onPress={redirectToCart}>
+                Beli Sekarang
+              </Button>
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </>
   );
 };
