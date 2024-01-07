@@ -3,6 +3,7 @@ import { Header } from "../components";
 import { Heading, Center, Text, Box, Image, Button, HStack, VStack, Spacer, Divider, Select, ScrollView } from "native-base";
 import { getData } from '../utils/localStorage';
 import FIREBASE from '../config/FIREBASE';
+import { Alert } from 'react-native';
 
 const Checkout = ({ route, navigation }) => {
   // Extracting parameters from the route
@@ -98,22 +99,36 @@ const Checkout = ({ route, navigation }) => {
   };
 
   const handleCheckout = () => {
-    saveOrderToFirebase()
-      .then(() => {
-        // Pass necessary information to Success screen
-        navigation.navigate('Succes', { cart, productQuantities });
-      })
-      .catch((error) => {
-        console.error('Error during checkout:', error);
-      });
+    if (selectedPayment === '') {
+      // Show an alert indicating that the user needs to select a payment method
+      Alert.alert('Pilih Metode Pembayaran', 'Mohon memilih metode pembayaran terlebih dahulu ');
+      return;
+    }
+
+    // Pass necessary information to Pembayaran screen
+    navigation.navigate('Pembayaran', {
+      cart,
+      productQuantities,
+      grandTotal,
+      selectedPayment,
+      profile,
+    });
   };
+
+
 
   // UNTUK RENDER CART ITEM
   const renderCartItem = (item) => (
-    <Box key={item.id} my={1} alignSelf={"center"} w={"100%"} h={"120"} bg={"white"} borderRadius={20} borderColor={"black"} borderWidth={2}>
+    <Box key={item.id} my={1} alignSelf={"center"} w={"100%"} h={"110"} bg={"white"} borderRadius={20} style={{
+      elevation: 6,
+      shadowColor: "#000",
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.5,
+      shadowRadius: 2,
+    }}>
       <HStack p={4}>
         {item?.image && (
-          <Image source={{ uri: item.image }} w={"30%"} h={"75"} alt='gambar produk' />
+          <Image source={{ uri: item.image }} w={"30%"} h={"75"} borderRadius={10} alt='gambar produk' />
         )}
         <VStack mx={3}>
           <Text bold fontSize={18}>{item?.title}</Text>
@@ -123,30 +138,26 @@ const Checkout = ({ route, navigation }) => {
         </VStack>
       </HStack>
     </Box>
-
   );
 
   return (
     <>
       <Header title={"Checkout"} withBack />
       <ScrollView>
-        <Heading ml={3} my={3}> INFORMASI PRODUK</Heading>
-        <Divider alignSelf={"center"} bg={"black"} w={"90%"} />
         <VStack p={4}>
-          {cart.map(renderCartItem)}
+          {cart.map((item) => renderCartItem(item))}
         </VStack>
         <Heading ml={3} my={3}> INFORMASI LAINYA</Heading>
         <Divider alignSelf={"center"} bg={"black"} w={"90%"} />
         <VStack>
           {cart.map((item) => (
-            <HStack mt={3} mx={5} justifyContent={"space-between"}>
-              <Text key={item.id}>{item.title} x {productQuantities[item.id] || 1}</Text>
+            <HStack key={item.id} mt={3} mx={5} justifyContent={"space-between"}>
+              <Text>{item.title} x {productQuantities[item.id] || 1}</Text>
               <Text> Rp. {item.price * (productQuantities[item.id] || 1)}</Text>
             </HStack>
           ))}
         </VStack>
-        <Divider my={3} alignSelf={"center"} bg={"black"} w={"90%"} />
-        <HStack mx={5} justifyContent={"space-between"}>
+        <HStack mt={2} mx={5} justifyContent={"space-between"}>
           <Text>Nama:</Text>
           <Text>{profile?.name}</Text>
         </HStack>
@@ -158,8 +169,6 @@ const Checkout = ({ route, navigation }) => {
           <Text>Alamat:</Text>
           <Text>{profile?.adress}</Text>
         </HStack>
-        <Divider my={3} alignSelf={"center"} bg={"black"} w={"90%"} />
-        <Heading ml={5}>METODE PEMBAYARAN</Heading>
         <Select
           selectedValue={selectedPayment}
           w={"90%"}
@@ -167,6 +176,7 @@ const Checkout = ({ route, navigation }) => {
           mt={3}
           borderColor={"black"}
           onValueChange={handlePaymentChange}
+          mb={120}
         >
           {paymentOptions.map((option, index) => (
             <Select.Item
@@ -176,16 +186,32 @@ const Checkout = ({ route, navigation }) => {
             />
           ))}
         </Select>
-        <Divider mt={5} alignSelf={"center"} bg={"black"} w={"90%"} />
-        <HStack mt={5} bgColor={"black"} shadow={20} h={"8%"} mb={4} borderRadius={20} alignSelf={"center"} bg={"white"} w={"90%"}>
-          <Box w={"60%"} borderRadius={20} h={"100%"} bg={"white"} mb={4}>
-            <Text fontSize={15} ml={2} my={4} bold>Total Harga: {grandTotal} </Text>
-          </Box>
-          <Button w={"40%"} borderRadius={20} h={"100%"} bg={"#38bdf8"} mb={4}>
-            <Heading color={"white"} my={2} alignSelf={"center"} onPress={handleCheckout}  bold>Checkout</Heading>
-          </Button>
-        </HStack>
       </ScrollView>
+      {/* <HStack mt={5}  bgColor={"black"} shadow={20} h={50} mb={4} borderRadius={20} alignSelf={"center"} bg={"white"} w={"90%"} position={'absolute'}>
+          <Box w={"60%"} borderRadius={20} h={50} bg={"white"} mb={4}>
+            <Text  fontSize={15} ml={3} mt={4} bold>Total Harga: {grandTotal} </Text>
+          </Box>
+          <Button w={"40%"} borderRadius={20} h={50} bg={"#38bdf8"} mb={4}>
+            <Heading color={"white"} my={2} alignSelf={"center"} onPress={handleCheckout} fontSize={15} bold>Bayar</Heading>
+          </Button>
+          
+        </HStack> */}
+      <HStack bg={'white'} shadow={5} space={2} position={'absolute'} bottom={0} left={0} w={400} h={90}>
+        <Button bg="#38bdf8" h={50} ml={5} w={"80%"} alignSelf={"center"} onPress={handleCheckout}  >
+          <Box flex={1} flexDirection="row" justifyContent="justify-between" alignItems="center" alignSelf={"center"}>
+            <Box ml={2} alignSelf={"center"}>
+              <Heading fontSize={20} color="white">
+                BAYAR
+              </Heading>
+            </Box>
+            <Box ml={2}>
+              <Heading fontSize={20} color="white">
+                Rp{grandTotal}
+              </Heading>
+            </Box>
+          </Box>
+        </Button>
+      </HStack>
     </>
   );
 };
