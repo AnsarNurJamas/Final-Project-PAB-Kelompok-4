@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from "../components";
-import { Box, Center, Icon, ScrollView, Text, VStack, Stack, Button, HStack, Heading, Divider, Input } from "native-base";
+import { Box, Center, Icon, ScrollView, Text, VStack, Stack, Button, HStack, Heading, Divider, Input, View } from "native-base";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { clearStorage, getData } from '../utils/localStorage';
 import FIREBASE from '../config/FIREBASE';
@@ -33,22 +33,22 @@ const Profile = ({ navigation }) => {
     };
   }, [navigation]);
 
-   // KODE UNTUK MELAKUKAN LOG OUT
-  const onSubmit = (profile) => {
+  // KODE UNTUK MELAKUKAN LOG OUT
+  const onSubmit = async (profile) => {
     if (profile) {
       FIREBASE.auth()
         .signOut()
-        .then(() => {
+        .then(async () => {
           // Sign-out successful.
-          clearStorage();
-          navigation.replace("Login");
+          await clearStorage();
+          navigation.replace('Landing');
         })
         .catch((error) => {
           // An error happened.
           alert(error);
         });
     } else {
-      navigation.replace("Login");
+      navigation.replace('Landing');
     }
   };
 
@@ -58,41 +58,84 @@ const Profile = ({ navigation }) => {
     navigation.navigate("EditProfile");
   };
 
+  const History = () => {
+    navigation.navigate("History");
+  };
+
+  const Artikel = () => {
+    navigation.navigate("Artikel");
+  };
+
+  const Faq = () => {
+    navigation.navigate("Faq");
+  };
+
   return (
     <>
-      <Header title={"PROFILE"} withBack="True" />
       <ScrollView>
-      <Box p={12} alignItems="center">
-        <Icon as={Ionicons} name="person-circle-outline" size={200} color="black" />
-        <Heading>PROFILE DETAIL</Heading>
-      </Box>
-      <Divider w={370} alignSelf="center" justifyContent="center" />
-      <VStack>
-        <HStack mr={5} ml={5} mt={7} justifyContent="space-between">
-          <Text bold>Nama</Text>
-          <Text>{profile?.name}</Text>
-        </HStack>
-        <HStack mr={5} ml={5} mt={5} justifyContent="space-between">
-          <Text bold>Email</Text>
-          <Text>{profile?.email}</Text>
-        </HStack>
-        <HStack mr={5} ml={5} mt={5} justifyContent="space-between">
-          <Text bold>No Telepon</Text>
-          <Text>{profile?.notelephone}</Text>
-        </HStack>
-        <HStack mr={5} ml={5} mt={5} mb={3} justifyContent="space-between">
-          <Text bold>Alamat</Text>
-          <Text>{profile?.adress}</Text>
-        </HStack>
-      </VStack>
-      <VStack alignSelf="center" justifyContent="center">
-        <Button onPress={EditProfile} bg={"#38bdf8"} mt={5} w={380} h={50}>
-          <Heading color={"white"}>Edit Profile</Heading>
-        </Button>
-        <Button onPress={() => onSubmit(profile)} bg={"#38bdf8"} mt={7} h={50}>
-          <Heading color={"white"}>Keluar</Heading>
-        </Button>
-      </VStack>
+          <View>
+            <Box bg={"#38bdf8"} h={"240px"} w={"100%"}
+            >
+              <Box p={4} alignItems="center">
+                <Icon as={Ionicons} name="person-circle-outline" size={200} color="white" />
+              </Box>
+            </Box>
+            <Box bg={"#38bdf8"} h={"100px"} w={"100%"} borderBottomRadius={130}>
+              <Heading alignSelf={"center"} color={"white"}>{profile?.name}</Heading></Box>
+          </View>
+
+          <Box alignSelf={"center"} bg={"white"} h={"330px"} w={"85%"} borderRadius={20} mt={-16}>
+            <HStack justifyContent={"space-between"} mt={5} mx={4}>
+
+              <Button borderRadius={10} bg={"#E7E7E7"} w={"30%"} h={"48%"} shadow={2} onPress={Faq}>
+                <Box pt={2} borderWidth={2} borderColor={"#4B65C5"} mt={2} borderRadius={"70px"} alignSelf={"center"} bg={"#38bdf8"} w={"150%"} h={"90%"}>
+                  <Ionicons alignSelf={"center"} name="chatbubbles" size={30} color="white" />
+                </Box>
+                <Text alignSelf={"center"} bold>FAQ</Text>
+              </Button>
+
+              <Button borderRadius={10} bg={"#E7E7E7"} w={"30%"} h={"48%"} shadow={2} onPress={History}>
+                <Box pt={2} borderWidth={2} borderColor={"#4B65C5"} mt={2} borderRadius={"70px"} alignSelf={"center"} bg={"#38bdf8"} w={"125%"} h={"90%"}>
+                  <Ionicons alignSelf={"center"} name="receipt" size={30} color="white" />
+                </Box>
+                <Text alignSelf={"center"} bold>Riwayat</Text>
+              </Button>
+
+              <Button borderRadius={10} bg={"#E7E7E7"} w={"30%"} h={"48%"} shadow={2} onPress={Artikel}>
+                <Box pt={2} borderWidth={2} borderColor={"#4B65C5"} mt={2} borderRadius={"70px"} alignSelf={"center"} bg={"#38bdf8"} w={"150%"} h={"90%"}>
+                  <Ionicons alignSelf={"center"} name="newspaper" size={30} color="white" />
+                </Box>
+                <Text alignSelf={"center"} bold>Artikel</Text>
+              </Button>
+            </HStack>
+
+            <VStack mt={-20}>
+              <HStack mr={5} ml={5} mt={4} justifyContent="space-between">
+                <Text bold>Nama</Text>
+                <Text>{profile?.name}</Text>
+              </HStack>
+              <HStack mr={5} ml={5} mt={5} justifyContent="space-between">
+                <Text bold>Email</Text>
+                <Text>{profile?.email}</Text>
+              </HStack>
+              <HStack mr={5} ml={5} mt={5} justifyContent="space-between">
+                <Text bold>No Telepon</Text>
+                <Text>{profile?.notelephone}</Text>
+              </HStack>
+              <HStack mr={5} ml={5} mt={5} mb={3} justifyContent="space-between">
+                <Text bold>Alamat</Text>
+                <Text>{profile?.adress}</Text>
+              </HStack>
+            </VStack>
+            <HStack mx={4} mt={3} justifyContent="space-between">
+              <Button onPress={EditProfile} bg={"#38bdf8"} w={"40%"} h={"100%"}>
+                <Text fontSize={17} bold color={"white"}>Edit Profile</Text>
+              </Button>
+              <Button onPress={() => onSubmit(profile)} bg={"#38bdf8"} w={"40%"} h={"100%"}>
+                <Text fontSize={17} bold color={"white"}>Keluar</Text>
+              </Button>
+            </HStack>
+          </Box>
       </ScrollView>
     </>
   );
