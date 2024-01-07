@@ -23,6 +23,8 @@ import Article from "./screens/article";
 import DetailArticle from "./screens/detailArticle";
 import Landing from "./screens/landing";
 import Splash from "./screens/splash";
+import Pembayaran from "./screens/pembayaran";
+
 
 // Navigator Declaration
 const Stack = createNativeStackNavigator();
@@ -162,6 +164,11 @@ const App = () => {
           <Stack.Screen
             name="Landing"
             component={Landing}
+            options={noHead}
+          />
+          <Stack.Screen
+            name="Pembayaran"
+            component={Pembayaran}
             options={noHead}
           />
         </Stack.Navigator>

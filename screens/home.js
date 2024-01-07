@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Header } from "../components";
 import { HomeHeader } from "../components";
 import Svg, { Path } from "react-native-svg";
 import Ionicons from "@expo/vector-icons/Ionicons";
