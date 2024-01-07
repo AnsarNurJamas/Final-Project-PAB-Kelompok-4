@@ -1,28 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
+import { Alert, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { getDatabase, ref, onValue } from 'firebase/database';
-import { TouchableOpacity } from 'react-native';
 import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage';
 import FIREBASE from '../config/FIREBASE';
 import { Header } from '../components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { VStack, View, Text, FlatList, Image, HStack, Box, Divider, Icon, Button, Modal, ScrollView } from 'native-base';
+import { VStack, Text, FlatList, Image, HStack, Box, Divider, Icon, Button, Modal, Input } from 'native-base';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-
-
-const Product = ({ navigation }) => {
+const Product = ({ route, navigation }) => {
   const [products, setProducts] = useState([]);
-  const [isModalVisible, setModalVisible] = useState(false);
   const [cart, setCart] = useState([]);
+  const [index, setIndex] = useState(route.params?.tabIndex || 0);
+  const [searchText, setSearchText] = useState('');
+  const { searchTextt } = route.params || {};
+  const [routes] = useState([
+    { key: 'first', title: 'Benih Ikan' },
+    { key: 'second', title: 'Ikan' },
+    { key: 'third', title: 'Udang' },
+    { key: 'four', title: 'Semua Produk' },
 
-  const openModal = () => {
-    setModalVisible(true);
-  };
-  const closeModal = () => {
-    setModalVisible(false);
-  };
+  ]);
+  const { category, tabIndex } = route.params || {};
+  const initialIndex = tabIndex || 0;
+  const filteredProducts = searchTextt
+    ? products.filter((item) =>
+      item.namaproduct.toLowerCase().includes(searchTextt.toLowerCase())
+    )
+    : products;
 
   useEffect(() => {
     const loadCartFromStorage = async () => {
@@ -62,124 +68,87 @@ const Product = ({ navigation }) => {
     return () => unsubscribe();
   }, []);
 
-  const redirectToCart = () => {
-    setModalVisible(false);
-    navigation.navigate('Cart', { items: cart }); // Assuming 'Cart' is the name of your cart screen
-  };
 
-  const addToCart = (item) => {
+  const addToCart = async (item) => {
     const newItem = {
       id: item.id,
       title: item.namaproduct,
       price: item.hargajual,
       image: item.imageUrl,
       jenis: item.kategoriproduct,
-      // ... (other properties you may want to include)
     };
 
-    // Update the state and AsyncStorage with the new cart data
-    setCart((prevCart) => {
-      const newCart = [...prevCart, newItem];
-      AsyncStorage.setItem('cart', JSON.stringify(newCart)).catch((error) => {
-        console.error('Error saving cart to AsyncStorage:', error);
-      });
-      return newCart;
-    });
+    try {
+      const existingCartJSON = await AsyncStorage.getItem('cart');
+      const existingCart = existingCartJSON ? JSON.parse(existingCartJSON) : [];
+
+      const itemExists = existingCart.some((cartItem) => cartItem.id === newItem.id);
+
+      if (itemExists) {
+        Alert.alert('Peringatan!', 'Barang sudah ada di keranjang');
+      } else {
+        const newCart = [...existingCart, newItem];
+        await AsyncStorage.setItem('cart', JSON.stringify(newCart));
+        setCart(newCart);
+
+        // Show alert after adding item to the cart
+        Alert.alert('Sukses!', 'Barang berhasil ditambahkan ke keranjang');
+      }
+    } catch (error) {
+      console.error('Error handling addToCart:', error);
+    }
   };
 
-  const removeItemFromCart = (itemId) => {
-    // Update the state and AsyncStorage with the new cart data after removing the item
-    setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== itemId);
-      AsyncStorage.setItem('cart', JSON.stringify(updatedCart)).catch((error) => {
-        console.error('Error saving cart to AsyncStorage:', error);
-      });
-      return updatedCart;
-    });
-  };
 
-  const calculateTotalPrice = () => {
-    const totalPrice = cart.reduce((accumulator, item) => accumulator + Number(item.price), 0);
-    return totalPrice.toFixed(0);
-  };
-  const renderItem = ({ item }) => (
+
+
+  const renderItem = ({ item, }) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate('ProductDetail', {
-          item: {
-            image: item.imageUrl,
-            title: item.namaproduct,
-            content: item.productDescription,
-            price: item.hargajual,
-            jenis: item.kategoriproduct,
-            stok: item.stok,
-            id: item.id,
-          },
-        })
+        navigation.navigate('ProductDetail', { product: item })
       }>
-      <Box>
+      <Box my={2} w={'90%'} borderWidth={1} h={120} alignSelf={'center'} borderRadius={10}>
         <HStack>
-          <Image source={{ uri: item.imageUrl }} style={{ width: 140, height: 140 }} alt='Gambar Produk'/>
+          <Image ml={2} mt={2} borderRadius={10} source={{ uri: item.imageUrl }} style={{ width: 100, height: 100 }} alt='Gambar Produk' />
           <VStack>
             <Box mx={5} my={2}>
-              <Text bold fontSize={23}>{item.namaproduct}</Text>
-              <Text my={2} bold>Rp. {item.hargajual}/kg </Text>
-              <Button w={"70%"} h={10} bg={"#4ade80"} onPress={() => addToCart(item)}>
-                <HStack>
-                  <Icon as={<Ionicons name="cart" />} size="6" color="black" />
-                  <Text bold ml={3}>Tambah</Text>
-                </HStack>
-              </Button>
+              <Text mt={1} bold fontSize={20}>{item.namaproduct}</Text>
+              <Text my={1} bold>Rp. {item.hargajual}/kg </Text>
+              {item.stok > 0 ? (
+                <Button
+                  mt={1}
+                  w={'70%'}
+                  h={8}
+                  bg={'#4ade80'}
+                  onPress={() => addToCart(item)}
+                >
+                  <HStack>
+                    <Icon as={<Ionicons name='cart' />} size='5' color={'black'} />
+                    <Text bold ml={3}>Tambah</Text>
+                  </HStack>
+                </Button>
+              ) : (
+                <Text fontSize={15} color="red.500">Stok Habis</Text>
+              )}
             </Box>
           </VStack>
         </HStack>
       </Box>
-      <Divider />
     </TouchableOpacity>
   );
 
-  const ProductListTabThree = ({ route }) => {
-    const { key } = route;
-  
-    // Filter products based on the tab key
-    const filteredProducts = products.filter((item) => {
-      let categoryToDisplay = '';
-  
-      if (key === 'three') {
-        categoryToDisplay = 'Ikan Besar';
-      } else {
-        // Add other conditions for additional categories if needed
-      }
-  
-      return item.kategoriproduct === categoryToDisplay;
-    });
-    return (
-      <FlatList
-        data={filteredProducts}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
-    );
-  };
-
-
   const ProductListTab = ({ route }) => {
     const { key } = route;
-
-    // Filter products based on the tab key
-    const filteredProducts = products.filter((item) => {
-      let categoryToDisplay = '';
-
-      if (key === 'first') {
-        categoryToDisplay = 'Benih Ikan';
-      } else if (key === 'second') {
-        categoryToDisplay = 'Ikan Kecil';
-      } else {
-        categoryToDisplay = 'Ikan Besar'; // Add other conditions for additional categories if needed
-      }
-
-      return item.kategoriproduct === categoryToDisplay;
-    });
+    const filteredProducts =
+      key === 'four'
+        ? products.filter((item) =>
+          item.namaproduct.toLowerCase().includes(searchText.toLowerCase())
+        )
+        : products
+          .filter((item) => item.kategoriproduct === getCategory(key))
+          .filter((item) =>
+            item.namaproduct.toLowerCase().includes(searchText.toLowerCase())
+          );
 
     return (
       <FlatList
@@ -190,56 +159,62 @@ const Product = ({ navigation }) => {
     );
   };
 
-  // Define your other tab scenes similarly
+  const getCategory = (key) => {
+    switch (key) {
+      case 'first':
+        return 'Benih Ikan';
+      case 'second':
+        return 'Ikan';
+      case 'third':
+        return 'Udang';
+      case 'four':
+        return 'Semua Produk';
+      default:
+        return '';
+    }
+  };
+
 
   const renderScene = SceneMap({
     first: ProductListTab,
     second: ProductListTab,
-    three: ProductListTabThree, // Assuming you have a third category scene
+    third: ProductListTab,
+    four: ProductListTab,
+
   });
 
   const layout = useWindowDimensions();
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'first', title: 'Benih Ikan' },
-    { key: 'second', title: 'Ikan Kecil' },
-    { key: 'three', title: 'Ikan Besar' },
-  ]);
 
   return (
     <>
-      <Header title={'Product'} withBack={true} />
+      <Header title={'Product'} />
+      <Box bg={'#1197FD'} w={'100%'} h={12}>
+        <Input
+          fontSize={16}
+          borderRadius={10}
+          borderColor={'black'}
+          alignSelf={'center'}
+          my={3}
+          h={9}
+          w={'85%'}
+          color={'white'}
+          placeholderTextColor={'white'}
+          placeholder='Cari Product'
+          value={searchText}
+          onChangeText={(text) => setSearchText(text)}
+          InputLeftElement={<Icon ml='2' size='5' color='white' as={<Ionicons name='ios-search' />} />}
+        ></Input>
+      </Box>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
+        initialIndex={initialIndex}
       />
-      <Modal
-        isOpen={isModalVisible}
-        onClose={closeModal}
-      >
-        <Modal.Content w={"85%"} h={"650"}>
-          <Modal.CloseButton />
-          <Modal.Header>Keranjang Belanja</Modal.Header>
-          <Modal.Body >
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Group space={2}>
-              <Button variant="ghost" colorScheme="blueGray" onPress={() => {
-                setModalVisible(false);
-              }}>
-                Kembali
-              </Button>
-              <Button onPress={redirectToCart}>
-                Beli Sekarang
-              </Button>
-            </Button.Group>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
     </>
   );
 };
 
 export default Product;
+

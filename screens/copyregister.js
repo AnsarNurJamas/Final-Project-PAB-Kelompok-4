@@ -27,7 +27,7 @@ const Register = ({ route, navigation }) => {
   };
 
   const onRegister = async () => {
-    if (name && email && notelephone && password && adress && selectProvinsi && kota) {
+    if (name && email && notelephone && password && adress && provinsi && kota) {
       const data = {
         name: name,
         email: email,

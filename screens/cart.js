@@ -19,18 +19,43 @@ const Cart = ({ route, navigation }) => {
   const [grandTotal, setGrandTotal] = useState(price * quantity);
   const [timestamp, setTimestamp] = useState('');
 
-  // FUNGSI UNTUK INCREMENT / + 
-  const handleIncrement = (productId) => {
+  useEffect(() => {
+    const loadCartAndCalculateTotal = async () => {
+      await loadCartFromStorage();
+      setGrandTotal(calculateInitialGrandTotal());
+    };
+
+    loadCartAndCalculateTotal();
+  }, []);
+
+  const calculateInitialGrandTotal = () => {
+    let total = 0;
+    for (const product of cart) {
+      const quantity = productQuantities[product.id] || 1;
+      total += product.totalPrice || product.price * quantity;
+    }
+    return total;
+  };
+
+  useEffect(() => {
+    const initialGrandTotal = calculateInitialGrandTotal();
+    setGrandTotal(initialGrandTotal);
+  }, [cart, productQuantities]);
+
+
+  const handleIncrement = async (productId) => {
     const newQuantities = { ...productQuantities };
     newQuantities[productId] = (newQuantities[productId] || 0) + 1;
     setProductQuantities(newQuantities);
 
     // Update the total price and grand total
-    updateTotalPrice(productId);
+    updateTotalPrice(productId, newQuantities[productId]);
     updateGrandTotal();
+
+    // Save the updated productQuantities to AsyncStorage
+    await saveProductQuantitiesToStorage(newQuantities);
   };
 
-  // FUNGSI UNTUK DECREMENT / - 
   const handleDecrement = (productId) => {
     if (productQuantities[productId] > 1) {
       const newQuantities = { ...productQuantities };
@@ -38,47 +63,91 @@ const Cart = ({ route, navigation }) => {
       setProductQuantities(newQuantities);
 
       // Update the total price and grand total
-      updateTotalPrice(productId);
+      updateTotalPrice(productId, newQuantities[productId]);
       updateGrandTotal();
     }
   };
 
-
   const updateGrandTotal = () => {
     let total = 0;
-    for (const productId in productQuantities) {
-      const quantity = productQuantities[productId];
-      const product = cart.find((item) => item.id === productId);
-      if (product) {
-        total += product.price * quantity;
-      }
+    for (const product of cart) {
+      const quantity = productQuantities[product.id] || 1;
+      total += product.totalPrice || product.price * quantity;
     }
     setGrandTotal(total);
   };
 
-  const updateTotalPrice = (productId) => {
-    const product = cart.find((item) => item.id === productId);
-    if (product) {
-      const quantity = productQuantities[productId] || 1;
-      const newTotalPrice = product.price * quantity;
-
-      // Find the index of the product in the cart
-      const productIndex = cart.findIndex((item) => item.id === productId);
-
-      // Update the total price for the specific product in the cart
+  const updateTotalPriceAndQuantities = (productId, quantity) => {
+    // Update the total price
+    const productIndex = cart.findIndex((item) => item.id === productId);
+    if (productIndex !== -1) {
       const updatedCart = [...cart];
       updatedCart[productIndex] = {
-        ...product,
-        totalPrice: newTotalPrice, // Add a new property totalPrice
+        ...updatedCart[productIndex],
+        totalPrice: updatedCart[productIndex].price * quantity,
       };
-
-      // Update the state
       setCart(updatedCart);
+      saveCartToStorage(updatedCart);
+    }
+    const newQuantities = { ...productQuantities };
+    newQuantities[productId] = quantity;
+    setProductQuantities(newQuantities);
+    saveProductQuantitiesToStorage(newQuantities);
+  };
 
-      // Save the updated cart to AsyncStorage
+  const saveProductQuantitiesToStorage = async (quantities) => {
+    try {
+      await AsyncStorage.setItem('productQuantities', JSON.stringify(quantities));
+    } catch (error) {
+      console.error('Error saving product quantities to AsyncStorage:', error);
+    }
+  };
+
+  const loadProductQuantitiesFromStorage = async () => {
+    try {
+      const quantitiesData = await AsyncStorage.getItem('productQuantities');
+      if (quantitiesData) {
+        setProductQuantities(JSON.parse(quantitiesData));
+      }
+    } catch (error) {
+      console.error('Error loading product quantities from AsyncStorage:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadProductQuantitiesFromStorage();
+  }, []);
+
+  const updateTotalPrice = (productId, quantity) => {
+    const productIndex = cart.findIndex((item) => item.id === productId);
+    if (productIndex !== -1) {
+      const updatedCart = [...cart];
+      updatedCart[productIndex] = {
+        ...updatedCart[productIndex],
+        totalPrice: updatedCart[productIndex].price * quantity,
+      };
+      setCart(updatedCart);
       saveCartToStorage(updatedCart);
     }
   };
+
+  useEffect(() => {
+    const loadCartAndCalculateTotal = async () => {
+      await loadCartFromStorage();
+      await loadProductQuantitiesFromStorage(); // Load product quantities from AsyncStorage
+      updateGrandTotal();
+    };
+
+    const unsubscribe = navigation.addListener("focus", () => {
+      getUserData();
+      loadCartAndCalculateTotal();
+      loadProductQuantitiesFromStorage(); // Load product quantities on each navigation focus
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [navigation]);
 
   // FUNGSI UNTUK MENGAMBIL DATA USER DARI ASYNC STORAGE
   const getUserData = async () => {
@@ -121,16 +190,26 @@ const Cart = ({ route, navigation }) => {
     loadCartFromStorage();
   }, []);
 
-  const handleDelete = (productId) => {
+  const handleDelete = async (productId) => {
+    // Remove the product from the cart
     const updatedCart = cart.filter((item) => item.id !== productId);
     setCart(updatedCart);
 
+    // Remove the product quantity from the state
     const newQuantities = { ...productQuantities };
     delete newQuantities[productId];
     setProductQuantities(newQuantities);
 
     // Save the updated cart to AsyncStorage
-    saveCartToStorage(updatedCart);
+    await saveCartToStorage(updatedCart);
+
+    // Remove the product from AsyncStorage
+    const storedCart = await AsyncStorage.getItem('cart');
+    if (storedCart) {
+      const storedCartData = JSON.parse(storedCart);
+      const updatedStoredCart = storedCartData.filter((item) => item.id !== productId);
+      await saveCartToStorage(updatedStoredCart);
+    }
   };
 
 
@@ -145,12 +224,31 @@ const Cart = ({ route, navigation }) => {
   }, [navigation]);
 
 
+  useEffect(() => {
+    const loadCartAndCalculateTotal = async () => {
+      await loadCartFromStorage();
+      updateGrandTotal();
+    };
+
+    loadCartAndCalculateTotal();
+  }, []);
+
+  const handleCheckout = () => {
+    // Pass the required parameters to Checkout screen
+    navigation.navigate('Checkout', {
+      cart,
+      productQuantities,
+      grandTotal,
+      // Other relevant data
+    });
+  };
+
   const renderItem = (item) => (
     <Box key={item.id} my={1} alignSelf={"center"} w={"100%"} h={"150"} bg={"white"} borderRadius={20} borderColor={"black"} borderWidth={2}>
       <VStack p={4}>
         <HStack>
           {item?.image && (
-            <Image source={{ uri: item.image }} style={{ width: 120, height: 110 }} alt='gambar produk' />
+            <Image source={{ uri: item.image }} style={{ width: 120, height: 110 }} alt='gambar produk' borderRadius={10}/>
           )}
           <VStack mx={3}>
             <Text bold fontSize={18}>{item?.title}</Text>
@@ -190,30 +288,21 @@ const Cart = ({ route, navigation }) => {
     </Box>
   );
 
-  const renderItemPrices = () => {
-    return cart.map((item) => (
-      <HStack key={item.id} mt={3} mx={5} justifyContent="space-between">
-        <Text>{`Harga ${item.title} (${productQuantities[item.id] || 1}x)`}</Text>
-        <Text>{`Rp. ${item.price * (productQuantities[item.id] || 1)}`}</Text>
-      </HStack>
-    ));
-  };
-
   return (
     <>
       <Header title={"Keranjang"} withBack />
       <ScrollView>
         <VStack p={4}>
-          {cart.map(renderItem)}
+        {cart.map((item) => renderItem(item))}
         </VStack>
       </ScrollView>
       <HStack shadow={20} h={"8%"} mb={4} borderRadius={20} alignSelf={"center"} bg={"white"} w={"90%"}>
         <Box w={"60%"} borderRadius={20} h={"100%"} bg={"white"} mb={4}>
-          <Text fontSize={15} ml={2} my={4} bold>Total Harga:  {grandTotal} </Text>
+          <Text fontSize={15} ml={2} my={4} bold>Total Harga: {grandTotal} </Text>
         </Box>
-        <Box w={"40%"} borderRadius={20} h={"100%"} bg={"#38bdf8"} mb={4}>
-          <Heading fontSize={21} color={"white"} my={4} alignSelf={"center"} bold>Checkout</Heading>
-        </Box>
+        <Button w={"40%"} borderRadius={20} h={"100%"} bg={"#38bdf8"} mb={4} onPress={handleCheckout}>
+          <Heading color={"white"} my={2} alignSelf={"center"} bold>Checkout</Heading>
+        </Button>
       </HStack>
     </>
   );

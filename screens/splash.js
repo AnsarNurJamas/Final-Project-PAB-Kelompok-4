@@ -1,34 +1,38 @@
-import { StyleSheet, View } from 'react-native'
-import React, { Component } from 'react'
+import { StyleSheet, View } from 'react-native';
+import React, { Component } from 'react';
 import { getData } from '../utils/localStorage';
 
 export default class Splash extends Component {
     componentDidMount() {
-        setTimeout(async() => {
-            const userData = await getData("user");
-            if (userData) {
-                this.props.navigation.replace('Tabs');
-            } else {
-                this.props.navigation.navigate('Login');
-            }
-        }, 3000)
+        this.checkUserStatus();
     }
 
+    checkUserStatus = async () => {
+        const userData = await getData("user");
+
+        // Check if user data is available
+        if (userData) {
+            // Redirect to the home page or another page if needed
+            this.props.navigation.replace('Tabs');
+        } else {
+            // Stay on the current page or redirect to the login page
+            // You can replace 'Landing' with the appropriate screen
+            this.props.navigation.replace('Landing');
+        }
+    };
+  
     render() {
-        return (
-            <View style={styles.pages}>
-            </View>
-        )
+      return <View style={styles.pages}></View>;
     }
-}
-
-const styles = StyleSheet.create({
+  }
+  
+  const styles = StyleSheet.create({
     pages: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
-})
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
 
 
 // import { StyleSheet, View } from 'react-native';

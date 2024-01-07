@@ -50,7 +50,12 @@ export const getData = async (key) => {
 //   }
 // };
 
-export const clearStorage = async() =>{
-  AsyncStorage.clear();
-}
+export const clearStorage = async () => {
+  try {
+    await AsyncStorage.removeItem('user');
+    // Clear other relevant data if needed
+  } catch (error) {
+    console.error('Error clearing storage:', error);
+  }
+};
 
