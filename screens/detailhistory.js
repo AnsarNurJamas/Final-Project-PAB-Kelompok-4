@@ -1,66 +1,83 @@
-import React, { useState } from 'react';
-import { Heading, Box, Image, Button, HStack, Divider, VStack, Text } from 'native-base';
-import { Header } from '../components';
+import React, { useEffect, useState } from "react";
+import { Box, VStack, Text, Image, ScrollView, HStack, Heading } from "native-base";
+import FIREBASE from '../config/FIREBASE';
+import { Header } from "../components";
+import { getDatabase, ref, onValue } from 'firebase/database';
+import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage';
 
-const DetailHistory = ({ navigation }) => {
-  // State variables
-  const [productDetails, setProductDetails] = useState({
-    Produk: 'Ikan Lele',
-    Jumlah: '3 Kg',
-    Harga: 'Rp 90.000',
-    Metode: 'Transfer Bank',
-    Nama: 'Denny Indra',
-    Nomer: '081234546554',
-    Alamat: 'Jl Lamongan Jaya, Jawa Timur',
-  });
+const DetailHistory = ({ route }) => {
+  const { transactionId } = route.params;
+  const [transactionDetails, setTransactionDetails] = useState(null);
+  const [productDetails, setProductDetails] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const Product = () => {
-    navigation.navigate('Product');
+  useEffect(() => {
+    fetchTransactionDetails();
+  }, []);
+
+  const fetchTransactionDetails = async () => {
+    try {
+      const transactionSnapshot = await FIREBASE.database().ref(`Transactions/${transactionId}`).once('value');
+      const transactionData = transactionSnapshot.val();
+
+      if (!transactionData) {
+        setError('Transaction not found.');
+        setLoading(false);
+        return;
+      }
+
+      setTransactionDetails(transactionData);
+
+      const productIds = transactionData.cart.map(cartItem => cartItem.id);
+      const productDetailsPromises = productIds.map(productId =>
+        FIREBASE.database().ref(`Product/${productId}`).once('value')
+      );
+
+      const productDetailsSnapshots = await Promise.all(productDetailsPromises);
+      const productDetailsData = productDetailsSnapshots.map(snapshot => snapshot.val() || {});
+      setProductDetails(productDetailsData);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching transaction details:', error);
+      setError('Error fetching transaction details. Please try again.');
+      setLoading(false);
+    }
   };
+
+
 
   return (
     <>
-      <Header title={'Detail Pembelian'} withBack={true} />
-      <Box bg={'white'} shadow={5} w={385} h={620} mr={3} ml={5} mt={3} mb={3}>
-        <Image
-          source={require('../assets/ikanlelee.png')}
-          width={90}
-          mt={5}
-          alignSelf="center"
-          justifyContent="center"
-          height={160}
-          alt="ikan"
-        />
-        <VStack space={3} p={5}>
-          <Heading>Detail</Heading>
-          <Divider w={350} alignSelf="center" justifyContent="center" />
-          {Object.entries(productDetails).map(([key, value]) => (
-            <HStack key={key} ml={5} mr={5} mt={3} justifyContent="space-between">
-              <Text bold>{key}</Text>
-              <Text>{value}</Text>
-            </HStack>
-          ))}
-          <Divider mt={5} w={350} alignSelf="center" justifyContent="center" />
-        </VStack>
-      </Box>
+      <Header title={"Detail History"} withBack="true" />
+      <ScrollView>
+        {transactionDetails && transactionDetails.cart.map((cartItem, index) => {
+          const product = productDetails[index];
 
-      <Box
-        alignSelf="center"
-        justifyContent="center"
-        bg={'white'}
-        shadow={5}
-        space={2}
-        alignItems="center"
-        position="absolute"
-        bottom={0}
-        left={0}
-        w={420}
-        h={90}
-      >
-        <Button bg="#38bdf8" h={50} alignSelf="center" justifyContent="center" w={350} onPress={Product}>
-          <Heading color={'white'}>Beli Kembali</Heading>
-        </Button>
-      </Box>
+          return (
+            <Box key={index} p={2} shadow={5} borderRadius={10} mr={3} ml={3} mt={4} mb={3} h={"145px"} bg={"white"}>
+              <HStack>
+                <Image
+                  source={{ uri: cartItem.image }}
+                  alt={`Product Image - ${cartItem.title}`}
+                  w={"35%"}
+                  h={"120px"}
+                  mt={1}
+                  ml={1}
+                  borderRadius={10}
+                />
+                <VStack mx={2} my={2}>
+                  <Heading>{cartItem.title}</Heading>
+                  <Text my={1}>{cartItem.jenis}</Text>
+                  <Text>{`Jumlah: ${cartItem.quantity || 1}`}</Text>
+                  <Text mt={1}>{`Total Harga: Rp ${cartItem.totalPrice || 0}`}</Text>
+                  {/* Add more details as needed */}
+                </VStack>
+              </HStack>
+            </Box>
+          );
+        })}
+      </ScrollView>
     </>
   );
 };
