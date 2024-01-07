@@ -5,7 +5,8 @@ import { Image, View, ScrollView } from 'native-base';
 
 
 const DetailArticle = ({ route }) => {
-  const { itemDikirim } = route.params; //mengekstrak itemDikirim dari parameter route
+  const { itemDikirim } = route.params;
+
 
   return (
     <View>
@@ -27,7 +28,7 @@ const DetailArticle = ({ route }) => {
             {itemDikirim.title}
             </Text>
 
-            <View 
+            <View
             p={3}
             width={380}
             marginBottom={10}
