@@ -12,7 +12,7 @@ const Article = () => {
       <TouchableOpacity
         activeOpacity={0.5}
         //untuk navigati ke detail artikel dan mengirimkan data yang diklik(data disimpan di itemDikirim)
-        onPress={() => navigation.navigate("Detail Article", { itemDikirim: item })}
+        onPress={() => navigation.navigate("DetailArtikel", { itemDikirim: item })}
       >
         <Box
           p={"4"}
@@ -48,7 +48,7 @@ const Article = () => {
 
   return (
     <>
-      <Header title={"Article"} />
+      <Header title={"Article"} withBack/>
       <FlatList
         data={articles}
         renderItem={renderitem}
