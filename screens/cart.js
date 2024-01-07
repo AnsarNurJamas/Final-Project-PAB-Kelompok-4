@@ -43,7 +43,7 @@ const Cart = ({ route, navigation }) => {
   }, [cart, productQuantities]);
 
 
-  const handleIncrement = (productId) => {
+  const handleIncrement = async (productId) => {
     const newQuantities = { ...productQuantities };
     newQuantities[productId] = (newQuantities[productId] || 0) + 1;
     setProductQuantities(newQuantities);
@@ -51,6 +51,9 @@ const Cart = ({ route, navigation }) => {
     // Update the total price and grand total
     updateTotalPrice(productId, newQuantities[productId]);
     updateGrandTotal();
+
+    // Save the updated productQuantities to AsyncStorage
+    await saveProductQuantitiesToStorage(newQuantities);
   };
 
   const handleDecrement = (productId) => {
@@ -131,6 +134,7 @@ const Cart = ({ route, navigation }) => {
   useEffect(() => {
     const loadCartAndCalculateTotal = async () => {
       await loadCartFromStorage();
+      await loadProductQuantitiesFromStorage(); // Load product quantities from AsyncStorage
       updateGrandTotal();
     };
 
@@ -244,7 +248,7 @@ const Cart = ({ route, navigation }) => {
       <VStack p={4}>
         <HStack>
           {item?.image && (
-            <Image source={{ uri: item.image }} style={{ width: 120, height: 110 }} alt='gambar produk' />
+            <Image source={{ uri: item.image }} style={{ width: 120, height: 110 }} alt='gambar produk' borderRadius={10}/>
           )}
           <VStack mx={3}>
             <Text bold fontSize={18}>{item?.title}</Text>
@@ -289,7 +293,7 @@ const Cart = ({ route, navigation }) => {
       <Header title={"Keranjang"} withBack />
       <ScrollView>
         <VStack p={4}>
-          {cart.map(renderItem)}
+        {cart.map((item) => renderItem(item))}
         </VStack>
       </ScrollView>
       <HStack shadow={20} h={"8%"} mb={4} borderRadius={20} alignSelf={"center"} bg={"white"} w={"90%"}>
