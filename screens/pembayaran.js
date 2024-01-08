@@ -7,8 +7,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FIREBASE from "../config/FIREBASE";
 import { Alert } from "react-native";
 
-
-
 const Pembayaran = ({ route, navigation }) => {
     const { cart, productQuantities, grandTotal, selectedPayment, saveCartToStorage } = route.params;
     const [image, setImage] = useState(null);
@@ -36,8 +34,8 @@ const Pembayaran = ({ route, navigation }) => {
 
     const uploadToFirebase = async () => {
         try {
+            // logika validasi bukti pembayaran 
             if (!BuktiPembayaran) {
-                // Display an alert if the payment proof is empty
                 Alert.alert("Peringatan", "Mohon unggah bukti pembayaran.");
                 return;
             }
@@ -45,26 +43,23 @@ const Pembayaran = ({ route, navigation }) => {
                 user = await AsyncStorage.getItem("user");
             const userData = JSON.parse(user);
 
-            // Generate a unique ID for the image
+            // fungsi membuat id unik untuk gambar 
             const imageId = Date.now().toString();
 
             const id = FIREBASE.database().ref('Transactions').push().key;
 
-            // Get the reference to the Firebase Storage
-            // const storageRef = FIREBASE.storage().ref(`pembayaran/${imageId}`);
-
-            // Convert the image URI to a Blob
+            // convert image ke blob
             const response = await fetch(image);
             const blob = await response.blob('image/*');
 
-            // Get the reference to the Firebase Storage
+            // fungsi mendeklarasikan referensi storage
             const storageRef = FIREBASE.storage().ref();
             const imageRef = storageRef.child(`pembayaran/${imageId}`);
 
-            // Upload the image to Firebase Storage using imageRef
+            // Unggah foto ke storage firebase
             await imageRef.put(blob);
 
-            // Get the download URL of the uploaded image
+            // Fungsi untuk download URL dari storage firebase
             const downloadURL = await imageRef.getDownloadURL();
 
 
@@ -113,13 +108,9 @@ const Pembayaran = ({ route, navigation }) => {
                 });
             });
 
-            // Upload orderData to Firebase Realtime Database
+            // Upload ke Realtime FIREBASE
             await FIREBASE.database().ref('Transactions').child(id).set(orderData);
-
             setIsPaymentProofUploaded(true);
-
-            // Clear the local cart and productQuantities data
-
         } catch (error) {
             console.error('Error during upload to Firebase:', error);
             setIsPaymentProofUploaded(false);
@@ -127,7 +118,6 @@ const Pembayaran = ({ route, navigation }) => {
     };
 
     const handleCheckout = () => {
-        // Check if BuktiPembayaran is empty before proceeding
         if (!BuktiPembayaran) {
             Alert.alert("Peringatan", "Mohon unggah bukti pembayaran.");
             return;
@@ -160,26 +150,26 @@ const Pembayaran = ({ route, navigation }) => {
                     </HStack>
                     <HStack justifyContent={"space-between"} mx={2} mt={2}>
                         <Text bold color={"white"} fontSize={17}>Nama</Text>
-                        <Text bold color={"white"} fontSize={17}>Ansar Nur Jamas</Text>
+                        <Text bold color={"white"} fontSize={17}>Ekky Dea Audry</Text>
                     </HStack>
                 </VStack>
             </Box>
-            <Box mt={5} alignSelf={"center"} w={"90%"} h={250} bg={"white"} borderWidth={1} borderRadius={10}>
-                <VStack>
-                    <HStack justifyContent={"space-between"} mx={3} my={3}>
-                        <Box w={"30%"} bg={"#38bdf8"} borderRadius={10}>
-                            <Text color={"white"} mt={3} ml={-1} bold textAlign={"center"}> Total</Text>
+            <Box mt={5} alignSelf={"center"} w={"90%"} h={230} bg={"white"} borderWidth={1} borderRadius={10}>
+                <VStack mt={1}>
+                    <HStack justifyContent={"space-between"} mx={3} mt={3}>
+                        <Box w={"30%"} bg={"#38bdf8"} borderRadius={10} h={9}>
+                            <Text fontSize={20} color={"white"} mt={1} ml={-1} bold textAlign={"center"}> Total</Text>
                         </Box>
-                        <Box borderWidth={1} borderRadius={10} borderColor={"#38bdf8"} w={"60%"} h={12}>
-                            <Text fontSize={19} mt={2} ml={2}>Rp {grandTotal}</Text>
+                        <Box borderWidth={1} borderRadius={10} borderColor={"#38bdf8"} w={"60%"} h={9}>
+                            <Text fontSize={20} mt={1} ml={2}>Rp {grandTotal}</Text>
                         </Box>
                     </HStack>
                     <HStack justifyContent={"space-between"} mx={3} my={3}>
-                        <Box w={"30%"} bg={"#38bdf8"} borderRadius={10}>
-                            <Text ml={-1} color={"white"} mt={1} bold textAlign={"center"}> Bukti Pembayaran</Text>
+                        <Box w={"30%"} bg={"#38bdf8"} borderRadius={10} h={9}>
+                            <Text fontSize={20} mt={1} ml={-1} color={"white"} bold textAlign={"center"}> Bukti</Text>
                         </Box>
 
-                        <Input borderWidth={1} borderRadius={10} borderColor={"#38bdf8"} w={"60%"} value={BuktiPembayaran} isReadOnly={true}></Input>
+                        <Input borderWidth={1} borderRadius={10} h={9} borderColor={"#38bdf8"} w={"60%"} value={BuktiPembayaran} isReadOnly={true} placeholder="Unggah Bukti Pembayaran"></Input>
                     </HStack>
                     <Button bg={"green.400"} alignSelf={"center"} w={"90%"} onPress={pickImage}>
                         <HStack>

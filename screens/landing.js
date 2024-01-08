@@ -21,7 +21,7 @@ const Landing = ({navigation}) => {
         <>
             <Text mt={100} alignSelf={"center"} fontFamily='PermanentMarker-Regular' fontSize={40} color={"#38bdf8"}>FISEESH STORE</Text>
             <Image
-                source={require("../assets/landing.png")}
+                source={require("../assets/landing2.png")}
                 w="240"
                 h="240"
                 alt="Fisheesh Logo"

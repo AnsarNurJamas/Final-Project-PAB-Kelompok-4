@@ -4,10 +4,10 @@
     "slug": "Fisheesh",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/fiseeshsplash4.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#38bdf8"
     },
@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jamas10.Fisheesh"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5ca360dd-69af-4ade-a366-49dc701c07be"
+      }
     }
   }
 }

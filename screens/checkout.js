@@ -63,41 +63,6 @@ const Checkout = ({ route, navigation }) => {
     { label: 'GoPay', value: 'gopay' },
   ];
 
-  const saveOrderToFirebase = async () => {
-    try {
-      const user = await getData("user");
-      const orderData = {
-        user: user,
-        cart: cart.map((item) => ({
-          id: item.id,
-          title: item.title,
-          price: item.price,
-          jenis: item.jenis,
-          quantity: productQuantities[item.id] || 1,
-          totalPrice: item.price * (productQuantities[item.id] || 1),
-        })),
-        productQuantities: productQuantities,
-        grandTotal: grandTotal,
-        paymentMethod: selectedPayment,
-        timestamp: new Date().toISOString(),
-      };
-      await FIREBASE.database().ref('Transactions').push(orderData);
-
-      // Update stock in Firebase (adjust this based on your database structure)
-      cart.forEach((item) => {
-        FIREBASE.database().ref(`Product/${item.id}/stok`).transaction((currentStock) => {
-          return currentStock - (productQuantities[item.id] || 1);
-        });
-      });
-
-      // Clear the local cart and productQuantities data
-      await saveCartToStorage([]);
-      await saveProductQuantitiesToStorage({});
-    } catch (error) {
-      console.error('Error during checkout:', error);
-    }
-  };
-
   const handleCheckout = () => {
     if (selectedPayment === '') {
       // Show an alert indicating that the user needs to select a payment method

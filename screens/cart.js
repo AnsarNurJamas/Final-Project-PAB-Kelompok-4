@@ -300,9 +300,15 @@ const Cart = ({ route, navigation }) => {
         <Box w={"60%"} borderRadius={20} h={"100%"} bg={"white"} mb={4}>
           <Text fontSize={15} ml={2} my={4} bold>Total Harga: {grandTotal} </Text>
         </Box>
-        <Button w={"40%"} borderRadius={20} h={"100%"} bg={"#38bdf8"} mb={4} onPress={handleCheckout}>
-          <Heading color={"white"} my={2} alignSelf={"center"} bold>Checkout</Heading>
-        </Button>
+        {cart.length > 0 ? (
+          <Button w={"40%"} borderRadius={20} h={"100%"} bg={"#38bdf8"} mb={4} onPress={handleCheckout}>
+            <Heading color={"white"} my={2} alignSelf={"center"} bold>Checkout</Heading>
+          </Button>
+        ) : (
+          <Button w={"40%"} borderRadius={20} h={"100%"} bg={"#38bdf8"} mb={4} isDisabled>
+            <Heading color={"white"} my={2} alignSelf={"center"} bold>Checkout</Heading>
+          </Button>
+        )}
       </HStack>
     </>
   );

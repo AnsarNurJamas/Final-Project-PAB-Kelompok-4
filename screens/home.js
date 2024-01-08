@@ -17,20 +17,6 @@ const imagesSlideshow1 = [
   // tambahkan gambar lainnya di sini
 ];
 
-const imagesSlideshow2 = [
-  { image: require('../assets/ikanbandeng.jpg'), text: "Ikan Bandeng" },
-  { image: require('../assets/ikanlele.jpg'), text: "Ikan Lele" },
-  { image: require('../assets/ikanmujaer.jpg'), text: "Ikan Mujaer" },
-  // tambahkan gambar produk lainnya di sini
-];
-
-const imagesSlideshow3 = [
-  { image: require('../assets/budidaya1.jpeg'), text: "Berita Ikan Berjalan" },
-  { image: require('../assets/budidaya2.jpeg'), text: "Berita Ikan Berjalan" },
-  { image: require('../assets/budidaya3.jpeg'), text: "Berita Ikan Makan Tahu" },
-  // tambahkan gambar produk lainnya di sini
-];
-
 
 const Home = () => {
   const [mostSoldProducts, setMostSoldProducts] = useState([]);
