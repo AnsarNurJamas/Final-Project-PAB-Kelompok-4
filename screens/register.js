@@ -132,7 +132,7 @@ const Register = ({ route, navigation }) => {
               variant="outline"
               value={notelephone}
               onChangeText={(notelephone) => setNotelephone(notelephone)}
-              keyboardType="default"
+              keyboardType="numeric"
               mt={1}
             />
             <Text mt={2}>Email</Text>
